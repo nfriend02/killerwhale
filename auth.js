@@ -165,7 +165,9 @@ class AuthManager {
 
     // 1. Guest Login (Anonymous Session)
     loginAsGuest() {
-        const guestUid = "guest_" + Math.random().toString(36).substring(2, 10);
+        const guestUid = (window.firebaseAuth && window.firebaseAuth.currentUser && window.firebaseAuth.currentUser.uid)
+            ? window.firebaseAuth.currentUser.uid
+            : "guest_" + Math.random().toString(36).substring(2, 10);
         const guestUser = {
             uid: guestUid,
             provider: "guest",
@@ -175,6 +177,18 @@ class AuthManager {
         };
 
         this.saveSession(guestUser, false);
+
+        // Sign in anonymously with Firebase in background for authenticated Firestore permissions
+        if (window.firebaseAuth && typeof window.firebaseAuth.signInAnonymously === "function") {
+            window.firebaseAuth.signInAnonymously().then(cred => {
+                if (this.currentUser && this.currentUser.provider === "guest") {
+                    this.currentUser.uid = cred.user.uid;
+                    this.saveSession(this.currentUser, false);
+                }
+            }).catch(err => {
+                console.warn("[Firebase] Anonymous auth fallback:", err.message);
+            });
+        }
         return guestUser;
     }
 
@@ -184,14 +198,35 @@ class AuthManager {
             try {
                 const result = await window.firebaseAuth.signInWithPopup(window.googleAuthProvider);
                 const user = result.user;
+                let nickname = user.displayName ? user.displayName.substring(0, 12) : "";
+
+                // Read existing profile from Firestore if present
+                if (window.firebaseFirestore && user.uid) {
+                    try {
+                        const doc = await window.firebaseFirestore.collection("users").doc(user.uid).get();
+                        if (doc.exists && doc.data() && doc.data().nickname) {
+                            nickname = doc.data().nickname;
+                        }
+                    } catch (e) {
+                        console.warn("[Firestore] Read profile warning:", e.message);
+                    }
+                }
+
+                if (!nickname) {
+                    const saved = localStorage.getItem(`profile_${user.uid}`);
+                    if (saved) {
+                        try { nickname = JSON.parse(saved).nickname || ""; } catch(e){}
+                    }
+                }
+
                 const appUser = {
                     uid: user.uid,
                     email: user.email,
                     provider: "google",
-                    nickname: user.displayName ? user.displayName.substring(0, 12) : "",
-                    isNew: !localStorage.getItem(`profile_${user.uid}`)
+                    nickname: nickname,
+                    isNew: !nickname
                 };
-                this.saveSession(appUser, true);
+                await this.saveSession(appUser, true);
                 return appUser;
             } catch (err) {
                 console.error("Firebase Google Auth Error:", err);
@@ -279,11 +314,27 @@ class AuthManager {
             if (window.firebaseAuth && typeof window.firebaseAuth.signInWithEmailAndPassword === "function") {
                 try {
                     const cred = await window.firebaseAuth.signInWithEmailAndPassword(cleanEmail, cleanPass);
-                    const savedProfile = localStorage.getItem(`profile_${cred.user.uid}`);
                     let nickname = "";
-                    if (savedProfile) {
-                        try { nickname = JSON.parse(savedProfile).nickname || ""; } catch(e){}
+
+                    // Read existing profile from Firestore if present
+                    if (window.firebaseFirestore && cred.user.uid) {
+                        try {
+                            const doc = await window.firebaseFirestore.collection("users").doc(cred.user.uid).get();
+                            if (doc.exists && doc.data() && doc.data().nickname) {
+                                nickname = doc.data().nickname;
+                            }
+                        } catch (e) {
+                            console.warn("[Firestore] Read profile warning:", e.message);
+                        }
                     }
+
+                    if (!nickname) {
+                        const savedProfile = localStorage.getItem(`profile_${cred.user.uid}`);
+                        if (savedProfile) {
+                            try { nickname = JSON.parse(savedProfile).nickname || ""; } catch(e){}
+                        }
+                    }
+
                     const appUser = {
                         uid: cred.user.uid,
                         email: cred.user.email,
@@ -399,6 +450,24 @@ class AuthManager {
             } else if (this.currentUser.phone) {
                 localStorage.setItem(`auth_phone_${this.currentUser.phone}`, JSON.stringify(this.currentUser));
             }
+            if (this.currentUser.uid) {
+                localStorage.setItem(`profile_${this.currentUser.uid}`, JSON.stringify(this.currentUser));
+            }
+
+            // Persist to Cloud Firestore 'users' collection (Create / Update)
+            if (window.firebaseFirestore && this.currentUser.uid) {
+                window.firebaseFirestore.collection("users").doc(this.currentUser.uid).set({
+                    uid: this.currentUser.uid,
+                    email: this.currentUser.email || "",
+                    nickname: clean,
+                    provider: this.currentUser.provider || "guest",
+                    updatedAt: Date.now()
+                }, { merge: true }).then(() => {
+                    console.log("[Firestore] User profile successfully saved to cloud DB");
+                }).catch(err => {
+                    console.warn("[Firestore] Save profile warning:", err.message);
+                });
+            }
         }
         this.updateHeaderUI();
         return clean;
@@ -431,11 +500,33 @@ class AuthManager {
 
         // Execute deletion
         if (this.currentUser) {
+            const uid = this.currentUser.uid;
             if (this.currentUser.email) {
                 localStorage.removeItem(`auth_user_${this.currentUser.email}`);
             }
             if (this.currentUser.phone) {
                 localStorage.removeItem(`auth_phone_${this.currentUser.phone}`);
+            }
+            if (uid) {
+                localStorage.removeItem(`profile_${uid}`);
+            }
+
+            // Delete user document from Cloud Firestore
+            if (window.firebaseFirestore && uid) {
+                window.firebaseFirestore.collection("users").doc(uid).delete().then(() => {
+                    console.log("[Firestore] User document deleted from cloud DB successfully");
+                }).catch(err => {
+                    console.warn("[Firestore] Delete profile warning:", err.message);
+                });
+            }
+
+            // Delete user from Firebase Auth
+            if (window.firebaseAuth && window.firebaseAuth.currentUser) {
+                window.firebaseAuth.currentUser.delete().then(() => {
+                    console.log("[FirebaseAuth] User authentication account deleted successfully");
+                }).catch(err => {
+                    console.warn("[FirebaseAuth] Delete user warning:", err.message);
+                });
             }
         }
 

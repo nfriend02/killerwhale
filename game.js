@@ -2378,6 +2378,24 @@ class KillerWhaleGame {
             chip.innerHTML = `<img src="${p.imgPath}" alt="${p.name}" style="width:30px; height:30px; vertical-align:middle; margin-right:6px; object-fit:contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));"> ${p.name}`;
             grid.appendChild(chip);
         });
+
+        // Save score record to Cloud Firestore 'rankings' collection
+        if (window.firebaseFirestore && window.authManager && window.authManager.currentUser) {
+            const u = window.authManager.currentUser;
+            window.firebaseFirestore.collection("rankings").add({
+                userId: u.uid,
+                nickname: u.nickname || "플레이어",
+                score: this.score,
+                maxCombo: this.maxCombo,
+                stage: this.currentStageIndex,
+                isClear: isClear,
+                timestamp: Date.now()
+            }).then(() => {
+                console.log("[Firestore] Score record successfully stored in cloud DB");
+            }).catch(err => {
+                console.warn("[Firestore] Score save warning:", err.message);
+            });
+        }
     }
 
     // --- 메인 게임 루프 ---
