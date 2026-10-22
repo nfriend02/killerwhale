@@ -1182,7 +1182,23 @@ class KillerWhaleGame {
         const dpadLeft = document.querySelector('.dpad-key[data-dir="left"]');
         const dpadRight = document.querySelector('.dpad-key[data-dir="right"]');
 
+        const isTypingField = (el) => {
+            if (!el) return false;
+            const tag = el.tagName;
+            return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
+        };
+
         window.addEventListener("keydown", (e) => {
+            // 텍스트 입력 필드(이메일, 비밀번호, 닉네임 등) 입력 중일 때는 게임 조작키 가로채기 금지
+            if (isTypingField(e.target)) {
+                return;
+            }
+
+            // 게임 플레이 상태가 아닐 때는 이동/점프 조작 처리 스킵
+            if (this.state !== "playing") {
+                return;
+            }
+
             // 데스크톱: 스페이스 바 클릭 시 'Jump' 버튼이 클릭되어 회피 및 도약 동작
             if (e.code === "Space") {
                 e.preventDefault();
@@ -1215,6 +1231,10 @@ class KillerWhaleGame {
         });
 
         window.addEventListener("keyup", (e) => {
+            if (isTypingField(e.target)) {
+                return;
+            }
+
             if (e.code === "Space") {
                 e.preventDefault();
                 if (jumpBtn) jumpBtn.classList.remove("pressed");
