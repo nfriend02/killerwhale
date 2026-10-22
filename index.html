@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title data-i18n="appTitle">범고래 (Killer Whale) - 횡스크롤 해양 아케이드</title>
+    <!-- Favicon & Mobile App Icons -->
+    <link rel="icon" type="image/png" href="assets/icons/app_icon_mobile.png">
+    <link rel="apple-touch-icon" href="assets/icons/app_icon_mobile.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Canvas (1280x720) -->
+        <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+        <!-- Top Right Language Switcher (KO / EN / JA) -->
+        <div id="global-lang-bar" class="lang-switcher-bar">
+            <button type="button" class="lang-btn active" data-lang="ko">KO</button>
+            <span class="lang-sep">|</span>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+            <span class="lang-sep">|</span>
+            <button type="button" class="lang-btn" data-lang="ja">JA</button>
+        </div>
+
+        <!-- Logged-in User Header Chip (Title / Result / MyPage) -->
+        <div id="header-auth-box" class="header-user-chip hidden">
+            <div class="user-info-group">
+                <span id="header-user-badge" class="user-badge" data-i18n="userGuestBadge">게스트</span>
+                <span id="header-user-nickname" class="user-nickname">플레이어</span>
+            </div>
+            <div class="user-action-group">
+                <button type="button" id="btn-header-mypage" class="mini-auth-btn" data-i18n="btnMyPage">마이페이지</button>
+                <button type="button" id="btn-header-logout" class="mini-auth-btn secondary" data-i18n="btnLogout">로그아웃</button>
+            </div>
+        </div>
+
+        <!-- -1. First Interaction Screen (Audio Gesture & Gateway) -->
+        <div id="screen-first" class="ui-layer first-gateway-layer">
+            <div class="first-bg-glow"></div>
+            <div class="first-content-card">
+                <div class="first-logo-emblem">🐋</div>
+                <h1 class="game-logo" data-i18n="gameTitle">KILLER WHALE</h1>
+                <p class="first-subtitle" data-i18n="gameSubtitle">미니게임 범고래 — 횡스크롤 해양 아케이드</p>
+                <div class="first-action-box">
+                    <button type="button" id="btn-first-start" class="arcade-btn primary pulse first-start-btn">
+                        <span data-i18n="touchToStart">화면을 터치하여 시작하세요</span>
+                    </button>
+                    <p class="first-hint-text" data-i18n="audioGestureHint">첫 터치 시 신디사이저 사운드가 활성화됩니다</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 0. 6-Second Intro Video Layer -->
+        <div id="screen-intro" class="ui-layer hidden">
+            <video id="intro-video" playsinline preload="auto" muted>
+                <source src="assets/video/intro_6s.mp4" type="video/mp4">
+                <source src="assets/video/intro.mp4" type="video/mp4">
+            </video>
+            <div class="intro-controls-overlay">
+                <button type="button" id="btn-intro-sound" class="arcade-btn secondary intro-aux-btn" title="소리 켜기/끄기">🔊 소리 켜기</button>
+                <button type="button" id="btn-intro-skip" class="arcade-btn secondary intro-skip-btn">SKIP ⏭</button>
+            </div>
+        </div>
+
+        <!-- 0.5. Login Screen (Guest, Google, Email, Phone) -->
+        <div id="screen-login" class="ui-layer modal-backdrop hidden">
+            <div class="modal-card login-card">
+                <div class="login-header">
+                    <div class="login-brand-icon">🌊</div>
+                    <h2 class="modal-title" data-i18n="loginTitle">로그인</h2>
+                    <p class="modal-subtitle" data-i18n="loginSubtitle">바다의 패자가 되기 위한 여정을 시작하세요</p>
+                </div>
+
+                <!-- Login Method Navigation Tabs -->
+                <div class="auth-tabs">
+                    <button type="button" class="auth-tab-btn active" data-tab="guest">⚡ <span data-i18n="tabGuest">게스트</span></button>
+                    <button type="button" class="auth-tab-btn" data-tab="google">🔍 <span data-i18n="tabGoogle">Google</span></button>
+                    <button type="button" class="auth-tab-btn" data-tab="email">✉️ <span data-i18n="tabEmail">이메일</span></button>
+                    <button type="button" class="auth-tab-btn" data-tab="phone">📱 <span data-i18n="tabPhone">전화번호</span></button>
+                </div>
+
+                <!-- Error & Feedback Notice Area -->
+                <div id="login-error-msg" class="auth-error-banner hidden"></div>
+
+                <!-- Tab 1: Guest Login -->
+                <div id="tab-content-guest" class="auth-tab-panel active">
+                    <div class="guest-info-box">
+                        <p class="guest-desc" data-i18n="guestNotice">게스트 모드는 브라우저 세션 동안 닉네임으로 유지되며, 세션 종료 시 초기화됩니다.</p>
+                    </div>
+                    <button type="button" id="btn-login-guest" class="arcade-btn primary full-width" data-i18n="btnGuestPlay">게스트로 바로 플레이</button>
+                </div>
+
+                <!-- Tab 2: Google Login -->
+                <div id="tab-content-google" class="auth-tab-panel">
+                    <button type="button" id="btn-login-google" class="arcade-btn google-btn full-width">
+                        <span class="google-g-icon">G</span>
+                        <span data-i18n="btnGoogleLogin">Google 계정으로 로그인</span>
+                    </button>
+                </div>
+
+                <!-- Tab 3: Email + Password Login -->
+                <div id="tab-content-email" class="auth-tab-panel">
+                    <form id="form-email-auth" onsubmit="return false;">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="emailLabel">이메일 주소</label>
+                            <input type="email" id="login-email" class="form-input" data-i18n-placeholder="emailPlaceholder" placeholder="name@example.com" autocomplete="email">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="passwordLabel">비밀번호 (6~20자 영문/숫자)</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="login-email-password" class="form-input" data-i18n-placeholder="passwordPlaceholder" placeholder="비밀번호 입력" autocomplete="current-password">
+                                <button type="button" class="btn-toggle-password" data-target="login-email-password" data-i18n="showPassword">보기</button>
+                            </div>
+                        </div>
+                        <div id="email-confirm-group" class="form-group hidden">
+                            <label class="form-label" data-i18n="passwordConfirmLabel">비밀번호 확인</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="login-email-confirm" class="form-input" data-i18n-placeholder="passwordConfirmPlaceholder" placeholder="비밀번호 재입력" autocomplete="new-password">
+                                <button type="button" class="btn-toggle-password" data-target="login-email-confirm" data-i18n="showPassword">보기</button>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-submit-email" class="arcade-btn primary full-width" data-i18n="btnLogin">로그인</button>
+                        <div class="auth-toggle-mode">
+                            <button type="button" id="btn-toggle-email-mode" class="text-link-btn" data-i18n="toggleToRegister">계정이 없으신가요? 회원가입</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tab 4: Phone + Password Login -->
+                <div id="tab-content-phone" class="auth-tab-panel">
+                    <form id="form-phone-auth" onsubmit="return false;">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="phoneLabel">전화번호</label>
+                            <div class="phone-input-combo">
+                                <input type="text" id="login-phone-code" class="phone-code-input" value="+82" readonly>
+                                <input type="tel" id="login-phone" class="form-input phone-main-input" data-i18n-placeholder="phonePlaceholder" placeholder="10-1234-5678" autocomplete="tel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="passwordLabel">비밀번호 (6~20자 영문/숫자)</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="login-phone-password" class="form-input" data-i18n-placeholder="passwordPlaceholder" placeholder="비밀번호 입력" autocomplete="current-password">
+                                <button type="button" class="btn-toggle-password" data-target="login-phone-password" data-i18n="showPassword">보기</button>
+                            </div>
+                        </div>
+                        <div id="phone-confirm-group" class="form-group hidden">
+                            <label class="form-label" data-i18n="passwordConfirmLabel">비밀번호 확인</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" id="login-phone-confirm" class="form-input" data-i18n-placeholder="passwordConfirmPlaceholder" placeholder="비밀번호 재입력" autocomplete="new-password">
+                                <button type="button" class="btn-toggle-password" data-target="login-phone-confirm" data-i18n="showPassword">보기</button>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-submit-phone" class="arcade-btn primary full-width" data-i18n="btnLogin">로그인</button>
+                        <div class="auth-toggle-mode">
+                            <button type="button" id="btn-toggle-phone-mode" class="text-link-btn" data-i18n="toggleToRegister">계정이 없으신가요? 회원가입</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 0.7. Nickname Setup Screen (For New Users) -->
+        <div id="screen-nickname" class="ui-layer modal-backdrop hidden">
+            <div class="modal-card nickname-card">
+                <div class="login-header">
+                    <div class="login-brand-icon">🏷️</div>
+                    <h2 class="modal-title" data-i18n="nicknameTitle">닉네임 설정</h2>
+                    <p class="modal-subtitle" data-i18n="nicknameSubtitle">첫 이용을 환영합니다! 바다에서 사용할 별명을 정해 주세요.</p>
+                </div>
+                <div id="nickname-error-msg" class="auth-error-banner hidden"></div>
+                <div class="form-group">
+                    <input type="text" id="input-nickname" class="form-input text-center nickname-large-input" maxlength="12" data-i18n-placeholder="nicknamePlaceholder" placeholder="2~12자 한글/영문/숫자" autocomplete="nickname">
+                    <p class="input-tip-sub" data-i18n="nicknameHint">2~12자 이내로 입력 후 Enter 키를 눌러 제출하세요.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="btn-submit-nickname" class="arcade-btn primary full-width" data-i18n="btnNicknameSubmit">별명 결정하고 시작 (Enter)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 0.8. MyPage Modal -->
+        <div id="screen-mypage" class="ui-layer modal-backdrop hidden">
+            <div class="modal-card mypage-card">
+                <div class="mypage-header">
+                    <h2 class="modal-title" data-i18n="myPageTitle">마이페이지</h2>
+                    <button type="button" id="btn-mypage-close" class="modal-close-icon">✕</button>
+                </div>
+
+                <div class="mypage-body">
+                    <!-- Profile Info -->
+                    <div class="mypage-row">
+                        <span class="mypage-label" data-i18n="myPageNicknameLabel">내 닉네임</span>
+                        <div class="mypage-val-box">
+                            <span id="mypage-current-nickname" class="mypage-value">플레이어</span>
+                            <button type="button" id="btn-mypage-edit-nickname" class="arcade-btn-mini" data-i18n="btnEditNickname">닉네임 수정</button>
+                        </div>
+                    </div>
+
+                    <div class="mypage-row">
+                        <span class="mypage-label" data-i18n="myPageAccountType">계정 유형</span>
+                        <span id="mypage-account-provider" class="mypage-value provider-tag">Guest</span>
+                    </div>
+
+                    <div class="mypage-row">
+                        <span class="mypage-label" data-i18n="myPagePasswordLabel">비밀번호</span>
+                        <div class="mypage-val-box">
+                            <span class="mypage-value" data-i18n="myPageMaskedPassword">••••••••</span>
+                            <button type="button" id="btn-mypage-change-password" class="arcade-btn-mini" data-i18n="btnChangePassword">비밀번호 변경</button>
+                        </div>
+                    </div>
+
+                    <!-- Delete Account Section -->
+                    <div class="mypage-danger-zone">
+                        <div id="delete-account-notice-box" class="delete-notice-box hidden">
+                            <p class="delete-notice-text" data-i18n="deleteAccountNotice">계정과 개인정보가 삭제됩니다. 순위 기록은 이름을 지운 채 남을 수 있습니다.</p>
+                        </div>
+                        <button type="button" id="btn-delete-account" class="arcade-btn danger-btn full-width" data-i18n="btnDeleteAccount">탈퇴</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- In-game Safe Area & HUD -->
+        <div id="hud-overlay" class="ui-layer hidden">
+            <div class="hud-top-bar">
+                <div class="hud-left">
+                    <button type="button" id="btn-pause" class="arcade-btn-icon" title="일시정지">≡</button>
+                    <div id="hud-lives-container" class="lives-container">
+                        <!-- Dynamically populated lives icons -->
+                    </div>
+                    <!-- King Evasion Mission Mini Button beside lives (Generated by default) -->
+                    <button type="button" id="btn-king-mission-toggle" class="hud-mission-mini-btn" data-i18n="missionBtnTitle" title="회피 미션 창 열기">🎯 Mission</button>
+                </div>
+
+                <div class="hud-center">
+                    <div class="stage-info">
+                        <span id="hud-stage-name">Stage 1: 태평양</span>
+                    </div>
+                    <div class="progress-bar-wrapper">
+                        <div id="hud-progress-fill" class="progress-fill"></div>
+                        <div id="hud-progress-pin" class="progress-pin">🐋</div>
+                    </div>
+                </div>
+
+                <div class="hud-right">
+                    <div class="score-display">
+                        <span class="label" data-i18n="scoreLabel">SCORE</span>
+                        <span id="hud-score" class="value">0</span>
+                    </div>
+                    <div id="hud-combo-badge" class="combo-badge hidden">
+                        <span id="hud-combo-count">COMBO x0</span>
+                        <div class="combo-timer-track">
+                            <div id="hud-combo-timer-fill" class="combo-timer-fill"></div>
+                        </div>
+                    </div>
+                    <!-- Admin Debug Pause Button -->
+                    <button type="button" id="btn-admin-pause" class="admin-dev-btn hidden" title="[Admin Only] 개발 및 디자인 조정용 순간 정지">⏸️ Pause</button>
+                </div>
+            </div>
+
+            <!-- Special Event & Fever Banner -->
+            <div id="hud-event-banner" class="event-banner hidden">
+                <span id="hud-event-text">정어리 떼 피딩 프렌지! (FEVER)</span>
+            </div>
+
+            <!-- Killer Whale Sonar Indicator -->
+            <div id="hud-warning-indicator" class="warning-indicator hidden">
+                <div class="warning-pulse" data-i18n="warningApproach">⚠️ 위험 접근!</div>
+            </div>
+
+            <!-- King of Enemies Rival Boss HUD -->
+            <div id="hud-king-mission" class="king-mission-banner hidden">
+                <div class="king-title-box">
+                    <span id="hud-king-name">👑 KING OF ENEMIES</span>
+                </div>
+                <div class="king-dodge-counter">
+                    <span class="dodge-label" data-i18n="dodgeSuccessCountLabel">회피 미션 성공:</span>
+                    <span id="hud-king-dodge-count" class="dodge-score">0 / 3</span>
+                    <div id="hud-king-dodge-pips" class="dodge-pips">
+                        <!-- ⚡ Pips -->
+                    </div>
+                </div>
+                <div class="king-tip-text" data-i18n="dodgeTipText">JUMP를 눌러 적의 돌진을 3D 공중제비로 회피하세요!</div>
+                <button type="button" id="btn-king-mission-close" class="king-mission-close-btn" data-i18n="closeMissionBoxTip" title="미션 창 접기">✕</button>
+            </div>
+
+            <!-- Skill Gauge Widget -->
+            <div id="hud-skill-widget" class="skill-widget">
+                <span id="hud-skill-name" data-i18n="skillLabel">스킬</span>
+                <div id="hud-skill-bar" class="skill-bar"></div>
+            </div>
+
+            <!-- Ergonomic Virtual Controller -->
+            <div id="virtual-controls" class="controls-layer">
+                <div id="virtual-jump" class="virtual-btn jump-btn" style="left: 8%; bottom: 12%;">
+                    <div class="btn-ripple"></div>
+                    <div class="btn-inner">
+                        <span class="btn-icon">▲</span>
+                        <span class="btn-label" data-i18n="jumpLabel">JUMP</span>
+                    </div>
+                </div>
+
+                <div id="virtual-dpad" class="virtual-dpad-module" style="right: 8%; bottom: 10%;">
+                    <button class="dpad-key key-up" data-dir="up">▲</button>
+                    <button class="dpad-key key-left" data-dir="left">◄</button>
+                    <div class="dpad-center"></div>
+                    <button class="dpad-key key-right" data-dir="right">►</button>
+                    <button class="dpad-key key-down" data-dir="down">▼</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. Main Title Screen (title_bg.png) -->
+        <div id="screen-title" class="ui-layer hidden">
+            <div id="title-bg-layer" class="custom-bg-layer"></div>
+            <div class="title-content">
+                <div class="ocean-sunbeams"></div>
+                <div class="title-logo-box">
+                    <h1 class="game-logo" data-i18n="gameTitle">KILLER WHALE</h1>
+                    <p class="game-sublogo" data-i18n="gameSubtitle">미니게임 범고래 — 횡스크롤 해양 아케이드</p>
+                </div>
+
+                <div class="title-action-box">
+                    <button type="button" id="btn-title-start" class="arcade-btn primary pulse" data-i18n="btnStartGame">START GAME</button>
+                    <button type="button" id="btn-title-character" class="arcade-btn secondary" data-i18n="btnCharacterSelect">주인공 선택 (5종)</button>
+                    <button type="button" id="btn-title-settings" class="arcade-btn tertiary" data-i18n="btnSettings">환경 설정 ⚙️</button>
+                    <button type="button" id="btn-title-intro-replay" class="arcade-btn tertiary" style="font-size:12px; padding:6px 12px; opacity:0.8;" data-i18n="btnReplayIntro">🎬 인트로 다시보기</button>
+                </div>
+
+                <div class="title-footer-tips">
+                    <p data-i18n="controlTips">조작: 왼손 엄지 JUMP (부스트) / 오른손 엄지 4방향 D-Pad | PC: Space / WASD</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Character Select Screen -->
+        <div id="screen-character" class="ui-layer modal-backdrop hidden">
+            <div class="modal-card select-card">
+                <h2 class="modal-title" data-i18n="charSelectTitle">주인공 캐릭터 선택</h2>
+
+                <div class="character-carousel">
+                    <button type="button" id="btn-char-prev" class="nav-arrow">◀</button>
+
+                    <div class="char-display-box">
+                        <div id="char-avatar" class="char-avatar">🐋</div>
+                        <h3 id="char-name" class="char-name">범고래 (Killer Whale)</h3>
+                        <p id="char-trait" class="char-trait">올라운더 / 밸런스형</p>
+                        <p id="char-skill-desc" class="char-skill">초음파 탐지: 위험 요소 사전 경고</p>
+
+                        <div class="stats-grid">
+                            <div class="stat-row"><span data-i18n="speed">이동 속도</span><div class="bar"><div id="stat-speed" class="fill"></div></div></div>
+                            <div class="stat-row"><span data-i18n="boost">부스트</span><div class="bar"><div id="stat-boost" class="fill"></div></div></div>
+                            <div class="stat-row"><span data-i18n="hitbox">피격 판정</span><div class="bar"><div id="stat-hitbox" class="fill"></div></div></div>
+                            <div class="stat-row"><span data-i18n="magnet">먹이 흡입</span><div class="bar"><div id="stat-magnet" class="fill"></div></div></div>
+                        </div>
+
+                        <div class="prey-preview-box">
+                            <h4 data-i18n="preyCollectionTitle">전용 먹이 10종 컬렉션</h4>
+                            <div id="char-prey-grid" class="prey-grid"></div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-char-next" class="nav-arrow">▶</button>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" id="btn-char-select-play" class="arcade-btn primary" data-i18n="btnDeployCharacter">이 캐릭터로 출격!</button>
+                    <button type="button" id="btn-char-back" class="arcade-btn secondary" data-i18n="back">뒤로 가기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Settings Modal (settings_modal_bg.png) -->
+        <div id="screen-settings" class="ui-layer modal-backdrop hidden">
+            <div id="settings-card" class="modal-card settings-card">
+                <h2 class="modal-title" data-i18n="settingsTitle">게임 환경 설정</h2>
+
+                <div class="settings-group">
+                    <label class="group-title" data-i18n="settingsLivesGroup">기본 목숨 (Lives) 설정:</label>
+                    <div class="radio-pill-group">
+                        <button type="button" class="pill-btn" data-lives="3">3<span data-i18n="livesUnit">회</span></button>
+                        <button type="button" class="pill-btn active" data-lives="4">4<span data-i18n="livesUnit">회</span></button>
+                        <button type="button" class="pill-btn" data-lives="5">5<span data-i18n="livesUnit">회</span></button>
+                        <button type="button" class="pill-btn" data-lives="6">6<span data-i18n="livesUnit">회</span></button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="group-title" data-i18n="settingsSoundGroup">사운드 설정:</label>
+                    <div class="slider-row">
+                        <span data-i18n="soundBgm">BGM</span>
+                        <input type="range" id="slider-bgm" min="0" max="1" step="0.05" value="0.8">
+                    </div>
+                    <div class="slider-row">
+                        <span data-i18n="soundSfx">SFX</span>
+                        <input type="range" id="slider-sfx" min="0" max="1" step="0.05" value="0.9">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="group-title" data-i18n="settingsControllerGroup">가상 컨트롤러 커스텀:</label>
+                    <div class="slider-row">
+                        <span data-i18n="ctrlOpacity">투명도</span>
+                        <input type="range" id="slider-opacity" min="0.2" max="1" step="0.05" value="0.8">
+                    </div>
+                    <div class="slider-row">
+                        <span data-i18n="ctrlScale">크기</span>
+                        <input type="range" id="slider-scale" min="0.8" max="1.2" step="0.05" value="1.0">
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" id="btn-settings-resume" class="arcade-btn primary" data-i18n="btnResume">계속하기 (Resume)</button>
+                    <button type="button" id="btn-settings-home" class="arcade-btn secondary" data-i18n="btnHome">타이틀로 (Home)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3.5. Mission Success / Mission Fail 3s Celebration & 'View Score' Overlay -->
+        <div id="screen-celebration" class="ui-layer celebration-overlay hidden">
+            <div id="celebration-banner" class="celebration-banner-box">
+                <div id="celebration-badge" class="celebration-badge">👑 STAGE 1</div>
+                <h1 id="celebration-title" class="celebration-text" data-i18n="missionSuccessTitle">미션 성공</h1>
+                <p id="celebration-sub" class="celebration-subtext" data-i18n="stageClearSubtitle">King of Enemies 격파 완료!</p>
+            </div>
+            <!-- 'View Score' Button displayed after 3-second celebration -->
+            <button type="button" id="btn-view-score" class="view-score-arcade-btn hidden">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text" data-i18n="btnViewScoreText">스코어 보기</span>
+            </button>
+        </div>
+
+        <!-- 4. Result Screen (result_bg.png) -->
+        <div id="screen-result" class="ui-layer modal-backdrop hidden">
+            <div id="result-card" class="modal-card result-card">
+                <h2 id="result-title" class="result-title" data-i18n="resultTitleClear">STAGE CLEAR</h2>
+                <p id="result-bridge-text" class="result-story">화창한 태평양을 지나 극지의 차가운 유빙 바다로 들어섭니다.</p>
+
+                <!-- Star Rating (★1 ~ ★3) -->
+                <div class="star-rating">
+                    <span id="star-1" class="star">★</span>
+                    <span id="star-2" class="star">★</span>
+                    <span id="star-3" class="star">★</span>
+                </div>
+
+                <div class="result-stats-box">
+                    <div class="stat-col">
+                        <span class="stat-label" data-i18n="finalScoreLabel">최종 획득 점수</span>
+                        <span id="result-score" class="stat-number">0</span>
+                    </div>
+                    <div class="stat-col">
+                        <span class="stat-label" data-i18n="maxComboLabel">최대 콤보</span>
+                        <span id="result-max-combo" class="stat-number">x0</span>
+                    </div>
+                </div>
+
+                <div class="result-prey-container">
+                    <h4 data-i18n="acquiredPreyTitle">획득한 전용 먹이 현황</h4>
+                    <div id="result-prey-grid" class="prey-grid"></div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" id="btn-result-retry" class="arcade-btn primary" data-i18n="btnRetry">다시 도전 (Retry)</button>
+                    <button type="button" id="btn-result-next" class="arcade-btn secondary" data-i18n="btnNextStage">다음 스테이지 ▶</button>
+                    <button type="button" id="btn-result-home" class="arcade-btn tertiary" data-i18n="btnResultHome">메인 화면</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (i18n, Firebase Init, Auth Manager, Game Engine) -->
+    <script src="i18n.js?v=20261021_i18n"></script>
+    <script src="firebase-config.js?v=20261021_fb"></script>
+    <script src="auth.js?v=20261021_auth"></script>
+    <script src="game.js?v=20261021_mission_v1"></script>
+</body>
+</html>
