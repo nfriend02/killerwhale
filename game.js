@@ -1556,7 +1556,7 @@ class KillerWhaleGame {
         // 9. King of Enemies 회피 미션 창 닫기(x) 및 상단 하트 옆 Mission 미니 버튼 토글
         const btnKingClose = document.getElementById("btn-king-mission-close");
         if (btnKingClose) {
-            const handleClose = (e) => {
+            btnKingClose.addEventListener("click", (e) => {
                 if (e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1564,29 +1564,39 @@ class KillerWhaleGame {
                 this.isKingMissionBoxVisible = false;
                 this.updateKingHUD();
                 if (this.audio && this.audio.playClick) this.audio.playClick();
-            };
-            btnKingClose.addEventListener("click", handleClose);
-            btnKingClose.addEventListener("pointerdown", handleClose);
+            });
         }
+
         const btnKingToggle = document.getElementById("btn-king-mission-toggle");
         if (btnKingToggle) {
-            const handleToggle = (e) => {
+            let lastToggleTime = 0;
+            btnKingToggle.addEventListener("click", (e) => {
                 if (e) {
                     e.preventDefault();
                     e.stopPropagation();
                 }
+                const now = Date.now();
+                if (now - lastToggleTime < 250) return; // 더블 트리거 방지 (연속 클릭 방어)
+                lastToggleTime = now;
+
                 this.isKingMissionBoxVisible = !this.isKingMissionBoxVisible;
                 this.updateKingHUD();
                 if (this.audio && this.audio.playClick) this.audio.playClick();
-            };
-            btnKingToggle.addEventListener("click", handleToggle);
-            btnKingToggle.addEventListener("pointerdown", handleToggle);
+            });
+        }
+
+        // 미션 박스 내부 클릭 시 이벤트 버블링 차단 (외부 클릭 닫힘 방지)
+        const hudKingMission = document.getElementById("hud-king-mission");
+        if (hudKingMission) {
+            hudKingMission.addEventListener("click", (e) => {
+                e.stopPropagation();
+            });
         }
 
         // 10. 미션 성공/실패 3초 후 하단 중앙에 생성되는 '스코어 보기' 버튼
         const btnViewScore = document.getElementById("btn-view-score");
         if (btnViewScore) {
-            const handleViewScore = (e) => {
+            btnViewScore.addEventListener("click", (e) => {
                 if (e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -1601,9 +1611,7 @@ class KillerWhaleGame {
                 if (this.audio && this.audio.playClick) this.audio.playClick();
                 this.state = "result";
                 this.showResultModal(this.celebration ? this.celebration.isSuccess : true);
-            };
-            btnViewScore.addEventListener("click", handleViewScore);
-            btnViewScore.addEventListener("pointerdown", handleViewScore);
+            });
         }
     }
 
