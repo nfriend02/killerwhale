@@ -556,6 +556,17 @@ class I18nManager {
             }
         });
 
+        // Update titles / tooltips with data-i18n-title
+        document.querySelectorAll("[data-i18n-title]").forEach(el => {
+            const key = el.getAttribute("data-i18n-title");
+            if (key) {
+                const translation = this.t(key);
+                if (translation) {
+                    el.title = translation;
+                }
+            }
+        });
+
         // Update localized phone placeholders
         const phoneInput = document.getElementById("login-phone");
         const phoneCodeInput = document.getElementById("login-phone-code");
