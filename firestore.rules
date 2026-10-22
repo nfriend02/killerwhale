@@ -12,9 +12,19 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Helper function: Check if user has Firebase admin custom claim (admin == true)
+    // Helper function: Check if user has Firebase admin custom claim or is registered in admins collection
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.admin == true;
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email != null && exists(/databases/$(database)/documents/admins/$(request.auth.token.email)))
+      );
+    }
+
+    // 0. Admin Roster: Read allowed for authenticated users to check privileges, writes restricted to admins
+    match /admins/{adminKey} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
 
     // 1. User Profiles: public nickname, level, stats

@@ -938,14 +938,14 @@ class KillerWhaleGame {
                 if (loginErrorMsg) loginErrorMsg.classList.add("hidden");
             });
 
-            btnSubmitEmail.addEventListener("click", () => {
+            btnSubmitEmail.addEventListener("click", async () => {
                 if (!this.audio.ctx) this.audio.init();
                 const emailVal = document.getElementById("login-email")?.value;
                 const passVal = document.getElementById("login-email-password")?.value;
                 const confirmVal = document.getElementById("login-email-confirm")?.value;
 
                 try {
-                    const user = window.authManager.loginWithEmail(emailVal, passVal, isEmailRegisterMode, confirmVal);
+                    const user = await window.authManager.loginWithEmail(emailVal, passVal, isEmailRegisterMode, confirmVal);
                     if (loginErrorMsg) loginErrorMsg.classList.add("hidden");
 
                     if (user.isNew || !user.nickname) {
@@ -1479,7 +1479,7 @@ class KillerWhaleGame {
             });
         }
 
-        // 8. 메인 관리자(Admin, ID: byki@daum.net) 전용 개발/디자인 조정 Pause/Go 토글
+        // 8. 메인 관리자(Admin) 전용 개발/디자인 조정 Pause/Go 토글
         const adminPauseBtn = document.getElementById("btn-admin-pause");
         if (adminPauseBtn) {
             adminPauseBtn.addEventListener("click", (e) => {
@@ -1501,19 +1501,17 @@ class KillerWhaleGame {
             // 관리자 비밀 인증 단축키 (Ctrl + Alt + A)
             if (e.ctrlKey && e.altKey && (e.code === "KeyA" || e.key === "a" || e.key === "A")) {
                 e.preventDefault();
-                const inputId = prompt("[Antigravity 메인 관리자 인증]\n관리자 ID(byki@daum.net) 또는 비밀번호(123456)를 입력하세요:");
-                if (inputId && (inputId.trim().toLowerCase() === "byki@daum.net" || inputId.trim() === "123456")) {
-                    localStorage.setItem("admin_auth_id", "byki@daum.net");
+                if (window.authManager && window.authManager.isAdmin) {
                     this.isAdminAuthorized = true;
-                    alert("메인 관리자(byki@daum.net) 인증이 완료되었습니다.\n상단 우측에 개발/디자인 조정용 Pause/Go 버튼이 활성화됩니다.");
+                    alert("인증 완료: 관리자 권한이 활성화되었습니다.\n상단 우측에 개발/디자인 조정용 Pause/Go 버튼이 활성화됩니다.");
                     this.checkAdminStatus();
-                } else if (inputId) {
-                    alert("인증 실패: 등록된 메인 관리자 ID 또는 비밀번호가 아닙니다.");
+                } else {
+                    alert("안내: 관리자 전용 기능입니다. 등록된 관리자 계정으로 로그인해 주세요.");
                 }
             }
         });
 
-        // 타이틀 로고 5회 연속 클릭 시 관리자 인증 프롬프트
+        // 타이틀 로고 5회 연속 클릭 시 관리자 권한 확인
         const logoEl = document.querySelector(".game-logo");
         if (logoEl) {
             let logoClicks = 0;
@@ -1524,14 +1522,12 @@ class KillerWhaleGame {
                 logoClickTimer = setTimeout(() => { logoClicks = 0; }, 1800);
                 if (logoClicks >= 5) {
                     logoClicks = 0;
-                    const inputId = prompt("[Antigravity 메인 관리자 인증]\n관리자 ID(byki@daum.net) 또는 비밀번호(123456)를 입력하세요:");
-                    if (inputId && (inputId.trim().toLowerCase() === "byki@daum.net" || inputId.trim() === "123456")) {
-                        localStorage.setItem("admin_auth_id", "byki@daum.net");
+                    if (window.authManager && window.authManager.isAdmin) {
                         this.isAdminAuthorized = true;
-                        alert("메인 관리자(byki@daum.net) 인증이 완료되었습니다.\n상단 우측에 개발/디자인 조정용 Pause/Go 버튼이 활성화됩니다.");
+                        alert("인증 완료: 관리자 권한이 활성화되었습니다.\n상단 우측에 개발/디자인 조정용 Pause/Go 버튼이 활성화됩니다.");
                         this.checkAdminStatus();
-                    } else if (inputId) {
-                        alert("인증 실패: 등록된 메인 관리자 ID 또는 비밀번호가 아닙니다.");
+                    } else {
+                        alert("안내: 관리자 전용 기능입니다. 등록된 관리자 계정으로 로그인해 주세요.");
                     }
                 }
             });
@@ -1610,28 +1606,11 @@ class KillerWhaleGame {
         }
     }
 
-    // --- 메인 관리자(Admin: byki@daum.net) 전용 보안 검증 및 개발/디자인 조정 제어 ---
+    // --- 메인 관리자 전용 개발/디자인 조정 제어 ---
     checkAdminStatus() {
-        const ADMIN_ID = "byki@daum.net";
         let authorized = false;
 
-        // 1. URL 파라미터 점검 (?admin=byki@daum.net 또는 ?user=byki@daum.net 또는 ?id=byki@daum.net)
-        const params = new URLSearchParams(window.location.search);
-        const urlId = params.get("admin") || params.get("user") || params.get("id");
-        if (urlId && urlId.trim().toLowerCase() === ADMIN_ID.toLowerCase()) {
-            localStorage.setItem("admin_auth_id", ADMIN_ID);
-            authorized = true;
-        }
-
-        // 2. 저장된 관리자 인증 ID 점검
-        const storedId = localStorage.getItem("admin_auth_id") || sessionStorage.getItem("admin_auth_id");
-        if (storedId && storedId.trim().toLowerCase() === ADMIN_ID.toLowerCase()) {
-            authorized = true;
-        }
-
-        // 3. 로컬호스트 개발 환경 자동 연동
-        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-            localStorage.setItem("admin_auth_id", ADMIN_ID);
+        if (window.authManager && window.authManager.isAdmin) {
             authorized = true;
         }
 
@@ -1643,9 +1622,11 @@ class KillerWhaleGame {
             if (authorized) {
                 btn.classList.add("authorized");
                 btn.classList.remove("hidden");
+                btn.style.display = "inline-flex";
             } else {
                 btn.classList.remove("authorized");
                 btn.classList.add("hidden");
+                btn.style.display = "none";
             }
         }
     }
@@ -2396,7 +2377,7 @@ class KillerWhaleGame {
     }
 
     update(dt) {
-        // 메인 관리자(Admin: byki@daum.net) 개발/디자인 조정 순간 일시정지 (Freeze)
+        // 메인 관리자(Admin) 개발/디자인 조정 순간 일시정지 (Freeze)
         if (this.isDevPaused) {
             return;
         }

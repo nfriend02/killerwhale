@@ -13,60 +13,26 @@ class AuthManager {
         this.deleteAccountConfirmStage = false;
         this.isAdmin = false;
 
+        // Clean up legacy local mock admin seeds if present
+        try {
+            localStorage.removeItem("auth_user_byki@daum.net");
+            if (localStorage.getItem("admin_auth_id") === "byki@daum.net") {
+                localStorage.removeItem("admin_auth_id");
+            }
+        } catch (e) {}
+
         this.init();
     }
 
     init() {
-        // Pre-configure main administrator account: byki@daum.net with password 123456
-        this.seedDefaultAdmin();
-
         // Load session from storage if exists
         this.restoreSession();
 
-        // Check Admin privilege via custom claim or local query parameter
+        // Check Admin privilege via Firestore admins collection or custom claims
         this.checkAdminStatus();
 
         // Initialize 30-minute inactivity tracker
         this.setupInactivityTracker();
-
-        // Pre-fill email login form with default admin credentials for quick access
-        this.prefillAdminForm();
-    }
-
-    seedDefaultAdmin() {
-        const adminEmail = "byki@daum.net";
-        const adminPass = "123456";
-        const adminData = {
-            uid: "admin_byki",
-            email: adminEmail,
-            passwordHash: btoa(adminPass),
-            provider: "email",
-            nickname: "Admin",
-            isNew: false,
-            customClaims: { admin: true },
-            createdAt: 1700000000000
-        };
-        localStorage.setItem(`auth_user_${adminEmail}`, JSON.stringify(adminData));
-        localStorage.setItem("admin_auth_id", adminEmail);
-    }
-
-    prefillAdminForm() {
-        const applyPrefill = () => {
-            const emailInput = document.getElementById("login-email");
-            const passInput = document.getElementById("login-email-password");
-            if (emailInput && !emailInput.value) {
-                emailInput.value = "byki@daum.net";
-            }
-            if (passInput && !passInput.value) {
-                passInput.value = "123456";
-            }
-        };
-
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", applyPrefill);
-        } else {
-            applyPrefill();
-        }
     }
 
     restoreSession() {
@@ -84,7 +50,7 @@ class AuthManager {
         }
     }
 
-    saveSession(user, persistent = false) {
+    async saveSession(user, persistent = false) {
         this.currentUser = user;
         this.sessionType = user.provider || "guest";
         const sessionData = JSON.stringify(user);
@@ -96,7 +62,7 @@ class AuthManager {
             localStorage.removeItem("kw_persistent_session");
         }
 
-        this.checkAdminStatus();
+        await this.checkAdminStatus();
         this.updateHeaderUI();
     }
 
@@ -111,30 +77,52 @@ class AuthManager {
         this.updateHeaderUI();
     }
 
-    checkAdminStatus() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const adminEmail = urlParams.get("admin");
-        if (adminEmail === "byki@daum.net") {
-            this.isAdmin = true;
+    async checkAdminStatus() {
+        let isAuthorized = false;
+
+        if (this.currentUser && this.currentUser.provider !== "guest") {
+            // 1. Firebase Auth Custom Claim Check
+            if (this.currentUser.customClaims && this.currentUser.customClaims.admin === true) {
+                isAuthorized = true;
+            }
+
+            // 2. Query Firestore 'admins' Collection securely
+            if (!isAuthorized && window.firebaseFirestore && (this.currentUser.email || this.currentUser.uid)) {
+                try {
+                    const checks = [];
+                    if (this.currentUser.email) {
+                        checks.push(window.firebaseFirestore.collection("admins").doc(this.currentUser.email).get());
+                    }
+                    if (this.currentUser.uid) {
+                        checks.push(window.firebaseFirestore.collection("admins").doc(this.currentUser.uid).get());
+                    }
+                    const snapshots = await Promise.all(checks);
+                    if (snapshots.some(snap => snap && snap.exists)) {
+                        isAuthorized = true;
+                        console.log("[Auth] Administrator privileges verified via Firestore database");
+                    }
+                } catch (err) {
+                    console.warn("[Auth] Admin database verification error:", err.message);
+                }
+            }
         }
 
-        // Direct email check for main admin
-        if (this.currentUser && (this.currentUser.email === "byki@daum.net" || (this.currentUser.customClaims && this.currentUser.customClaims.admin === true))) {
-            this.isAdmin = true;
-        }
+        this.isAdmin = isAuthorized;
 
-        // Local admin authorization check
-        if (localStorage.getItem("admin_auth_id") === "byki@daum.net") {
-            this.isAdmin = true;
+        // Sync with Game Engine if available
+        if (window.gameInstance) {
+            window.gameInstance.isAdminAuthorized = isAuthorized;
         }
 
         const adminBtn = document.getElementById("btn-admin-pause");
         if (adminBtn) {
             if (this.isAdmin) {
                 adminBtn.classList.add("authorized");
+                adminBtn.classList.remove("hidden");
                 adminBtn.style.display = "inline-flex";
             } else {
                 adminBtn.classList.remove("authorized");
+                adminBtn.classList.add("hidden");
                 adminBtn.style.display = "none";
             }
         }
@@ -224,8 +212,8 @@ class AuthManager {
         }
     }
 
-    // 3. Email + Password (Login / Register)
-    loginWithEmail(email, password, isRegister = false, confirmPassword = "") {
+    // 3. Email + Password (Login / Register with Firebase Auth & Fallback)
+    async loginWithEmail(email, password, isRegister = false, confirmPassword = "") {
         const cleanEmail = (email || "").trim();
         const cleanPass = (password || "").trim();
 
@@ -244,40 +232,98 @@ class AuthManager {
                 throw new Error(window.i18n.t("errPasswordMismatch"));
             }
 
-            // Save user profile locally
-            const uid = "usr_" + btoa(cleanEmail).replace(/=/g, "").toLowerCase();
-            const existing = localStorage.getItem(`auth_user_${cleanEmail}`);
-            if (existing) {
-                throw new Error(window.i18n.t("errLoginFailedEmail"));
+            if (window.firebaseAuth && typeof window.firebaseAuth.createUserWithEmailAndPassword === "function") {
+                try {
+                    const cred = await window.firebaseAuth.createUserWithEmailAndPassword(cleanEmail, cleanPass);
+                    const appUser = {
+                        uid: cred.user.uid,
+                        email: cred.user.email,
+                        provider: "email",
+                        nickname: "",
+                        isNew: true,
+                        createdAt: Date.now()
+                    };
+                    await this.saveSession(appUser, true);
+                    return appUser;
+                } catch (fbErr) {
+                    console.warn("[Firebase] Email registration error:", fbErr.code, fbErr.message);
+                    if (fbErr.code === "auth/email-already-in-use") {
+                        throw new Error("이미 사용 중인 이메일 주소입니다.");
+                    }
+                    throw new Error(fbErr.message || window.i18n.t("errLoginFailedEmail"));
+                }
+            } else {
+                // Local fallback simulation
+                const uid = "usr_" + btoa(cleanEmail).replace(/=/g, "").toLowerCase();
+                const existing = localStorage.getItem(`auth_user_${cleanEmail}`);
+                if (existing) {
+                    throw new Error(window.i18n.t("errLoginFailedEmail"));
+                }
+
+                const userData = {
+                    uid,
+                    email: cleanEmail,
+                    passwordHash: btoa(cleanPass),
+                    provider: "email",
+                    nickname: "",
+                    isNew: true,
+                    createdAt: Date.now()
+                };
+
+                localStorage.setItem(`auth_user_${cleanEmail}`, JSON.stringify(userData));
+                await this.saveSession(userData, true);
+                return userData;
             }
-
-            const userData = {
-                uid,
-                email: cleanEmail,
-                passwordHash: btoa(cleanPass),
-                provider: "email",
-                nickname: "",
-                isNew: true,
-                createdAt: Date.now()
-            };
-
-            localStorage.setItem(`auth_user_${cleanEmail}`, JSON.stringify(userData));
-            this.saveSession(userData, true);
-            return userData;
         } else {
-            // Login check
-            const record = localStorage.getItem(`auth_user_${cleanEmail}`);
-            if (!record) {
-                throw new Error(window.i18n.t("errLoginFailedEmail"));
-            }
-            const parsed = JSON.parse(record);
-            if (parsed.passwordHash !== btoa(cleanPass)) {
-                throw new Error(window.i18n.t("errLoginFailedEmail"));
-            }
+            // Login check via Firebase Auth
+            if (window.firebaseAuth && typeof window.firebaseAuth.signInWithEmailAndPassword === "function") {
+                try {
+                    const cred = await window.firebaseAuth.signInWithEmailAndPassword(cleanEmail, cleanPass);
+                    const savedProfile = localStorage.getItem(`profile_${cred.user.uid}`);
+                    let nickname = "";
+                    if (savedProfile) {
+                        try { nickname = JSON.parse(savedProfile).nickname || ""; } catch(e){}
+                    }
+                    const appUser = {
+                        uid: cred.user.uid,
+                        email: cred.user.email,
+                        provider: "email",
+                        nickname: nickname,
+                        isNew: !nickname
+                    };
+                    await this.saveSession(appUser, true);
+                    return appUser;
+                } catch (fbErr) {
+                    console.warn("[Firebase] Email login error:", fbErr.code, fbErr.message);
+                    // Check local mock user if exists
+                    const record = localStorage.getItem(`auth_user_${cleanEmail}`);
+                    if (record) {
+                        const parsed = JSON.parse(record);
+                        if (parsed.passwordHash === btoa(cleanPass)) {
+                            parsed.isNew = !parsed.nickname;
+                            await this.saveSession(parsed, true);
+                            return parsed;
+                        }
+                    }
+                    if (fbErr.code === "auth/user-not-found" || fbErr.code === "auth/wrong-password" || fbErr.code === "auth/invalid-credential") {
+                        throw new Error("이메일 또는 비밀번호가 일치하지 않습니다.");
+                    }
+                    throw new Error(fbErr.message || window.i18n.t("errLoginFailedEmail"));
+                }
+            } else {
+                const record = localStorage.getItem(`auth_user_${cleanEmail}`);
+                if (!record) {
+                    throw new Error(window.i18n.t("errLoginFailedEmail"));
+                }
+                const parsed = JSON.parse(record);
+                if (parsed.passwordHash !== btoa(cleanPass)) {
+                    throw new Error(window.i18n.t("errLoginFailedEmail"));
+                }
 
-            parsed.isNew = !parsed.nickname;
-            this.saveSession(parsed, true);
-            return parsed;
+                parsed.isNew = !parsed.nickname;
+                await this.saveSession(parsed, true);
+                return parsed;
+            }
         }
     }
 

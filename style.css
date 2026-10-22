@@ -293,7 +293,7 @@ canvas#gameCanvas {
     transition: width 0.05s linear;
 }
 
-/* 메인 관리자(Admin: byki@daum.net) 전용 개발/디자인 조정 일시정지 버튼 */
+/* 메인 관리자(Admin) 전용 개발/디자인 조정 일시정지 버튼 */
 .admin-dev-btn {
     display: none !important; /* 기본적으로 일반 사용자에게 완벽히 은닉 */
     padding: 6px 12px;
