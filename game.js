@@ -7,64 +7,64 @@
 // --- 1. 전용 먹이 50종 데이터베이스 (AI 생성 고화질 PNG 연동) ---
 const PREY_DATABASE = {
     killer_whale: [
-        { id: "kw_1", name: "물개", score: 100, icon: "🦭", imgPath: "assets/prey/killer_whale/kw_1_seal.png", rare: false },
-        { id: "kw_2", name: "연어", score: 100, icon: "🐟", imgPath: "assets/prey/killer_whale/kw_2_salmon.png", rare: false },
-        { id: "kw_3", name: "바다표범", score: 100, icon: "🦭", imgPath: "assets/prey/killer_whale/kw_3_fur_seal.png", rare: false },
-        { id: "kw_4", name: "펭귄", score: 100, icon: "🐧", imgPath: "assets/prey/killer_whale/kw_4_penguin.png", rare: false },
-        { id: "kw_5", name: "청어", score: 100, icon: "🐟", imgPath: "assets/prey/killer_whale/kw_5_herring.png", rare: false },
-        { id: "kw_6", name: "가오리", score: 100, icon: "🐡", imgPath: "assets/prey/killer_whale/kw_6_stingray.png", rare: false },
-        { id: "kw_7", name: "바다사자", score: 100, icon: "🦭", imgPath: "assets/prey/killer_whale/kw_7_sea_lion.png", rare: false },
-        { id: "kw_8", name: "오징어", score: 100, icon: "🦑", imgPath: "assets/prey/killer_whale/kw_8_squid.png", rare: false },
-        { id: "kw_9", name: "왕바다표범", score: 300, icon: "🦭", imgPath: "assets/prey/killer_whale/kw_9_elephant_seal.png", rare: true },
-        { id: "kw_10", name: "정어리 떼", score: 300, icon: "🐟", imgPath: "assets/prey/killer_whale/kw_10_sardines.png", rare: true }
+        { id: "kw_1", name: "물개", score: 100, icon: "🦭", imgPath: "Assets/prey/killer_whale/kw_1_seal.png", rare: false },
+        { id: "kw_2", name: "연어", score: 100, icon: "🐟", imgPath: "Assets/prey/killer_whale/kw_2_salmon.png", rare: false },
+        { id: "kw_3", name: "바다표범", score: 100, icon: "🦭", imgPath: "Assets/prey/killer_whale/kw_3_fur_seal.png", rare: false },
+        { id: "kw_4", name: "펭귄", score: 100, icon: "🐧", imgPath: "Assets/prey/killer_whale/kw_4_penguin.png", rare: false },
+        { id: "kw_5", name: "청어", score: 100, icon: "🐟", imgPath: "Assets/prey/killer_whale/kw_5_herring.png", rare: false },
+        { id: "kw_6", name: "가오리", score: 100, icon: "🐡", imgPath: "Assets/prey/killer_whale/kw_6_stingray.png", rare: false },
+        { id: "kw_7", name: "바다사자", score: 100, icon: "🦭", imgPath: "Assets/prey/killer_whale/kw_7_sea_lion.png", rare: false },
+        { id: "kw_8", name: "오징어", score: 100, icon: "🦑", imgPath: "Assets/prey/killer_whale/kw_8_squid.png", rare: false },
+        { id: "kw_9", name: "왕바다표범", score: 300, icon: "🦭", imgPath: "Assets/prey/killer_whale/kw_9_elephant_seal.png", rare: true },
+        { id: "kw_10", name: "정어리 떼", score: 300, icon: "🐟", imgPath: "Assets/prey/killer_whale/kw_10_sardines.png", rare: true }
     ],
     shark: [
-        { id: "sk_1", name: "참치", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_1_tuna.png", rare: false },
-        { id: "sk_2", name: "고등어", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_2_mackerel.png", rare: false },
-        { id: "sk_3", name: "바다거북", score: 300, icon: "🐢", imgPath: "assets/prey/shark/sk_3_turtle.png", rare: true },
-        { id: "sk_4", name: "정어리", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_4_sardine.png", rare: false },
-        { id: "sk_5", name: "방어", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_5_yellowtail.png", rare: false },
-        { id: "sk_6", name: "꽁치", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_6_saury.png", rare: false },
-        { id: "sk_7", name: "삼치", score: 100, icon: "🐟", imgPath: "assets/prey/shark/sk_7_spanish_mackerel.png", rare: false },
-        { id: "sk_8", name: "날치", score: 300, icon: "🐟", imgPath: "assets/prey/shark/sk_8_flying_fish.png", rare: true },
-        { id: "sk_9", name: "갑각류(게)", score: 100, icon: "🦀", imgPath: "assets/prey/shark/sk_9_crab.png", rare: false },
-        { id: "sk_10", name: "쥐치", score: 100, icon: "🐠", imgPath: "assets/prey/shark/sk_10_filefish.png", rare: false }
+        { id: "sk_1", name: "참치", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_1_tuna.png", rare: false },
+        { id: "sk_2", name: "고등어", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_2_mackerel.png", rare: false },
+        { id: "sk_3", name: "바다거북", score: 300, icon: "🐢", imgPath: "Assets/prey/shark/sk_3_turtle.png", rare: true },
+        { id: "sk_4", name: "정어리", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_4_sardine.png", rare: false },
+        { id: "sk_5", name: "방어", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_5_yellowtail.png", rare: false },
+        { id: "sk_6", name: "꽁치", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_6_saury.png", rare: false },
+        { id: "sk_7", name: "삼치", score: 100, icon: "🐟", imgPath: "Assets/prey/shark/sk_7_spanish_mackerel.png", rare: false },
+        { id: "sk_8", name: "날치", score: 300, icon: "🐟", imgPath: "Assets/prey/shark/sk_8_flying_fish.png", rare: true },
+        { id: "sk_9", name: "갑각류(게)", score: 100, icon: "🦀", imgPath: "Assets/prey/shark/sk_9_crab.png", rare: false },
+        { id: "sk_10", name: "쥐치", score: 100, icon: "🐠", imgPath: "Assets/prey/shark/sk_10_filefish.png", rare: false }
     ],
     blue_marlin: [
-        { id: "bm_1", name: "무늬오징어", score: 300, icon: "🦑", imgPath: "assets/prey/blue_marlin/bm_1_reef_squid.png", rare: true },
-        { id: "bm_2", name: "만새기", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_2_mahimahi.png", rare: false },
-        { id: "bm_3", name: "날치", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_3_flying_fish.png", rare: false },
-        { id: "bm_4", name: "멸치 떼", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_4_anchovy.png", rare: false },
-        { id: "bm_5", name: "삼치", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_5_spanish_mackerel.png", rare: false },
-        { id: "bm_6", name: "고등어", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_6_mackerel.png", rare: false },
-        { id: "bm_7", name: "전갱이", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_7_horse_mackerel.png", rare: false },
-        { id: "bm_8", name: "청새치 치어", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_8_young_marlin.png", rare: false },
-        { id: "bm_9", name: "꽁치", score: 100, icon: "🐟", imgPath: "assets/prey/blue_marlin/bm_9_saury.png", rare: false },
-        { id: "bm_10", name: "바다새", score: 300, icon: "🕊️", imgPath: "assets/prey/blue_marlin/bm_10_seabird.png", rare: true }
+        { id: "bm_1", name: "무늬오징어", score: 300, icon: "🦑", imgPath: "Assets/prey/blue_marlin/bm_1_reef_squid.png", rare: true },
+        { id: "bm_2", name: "만새기", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_2_mahimahi.png", rare: false },
+        { id: "bm_3", name: "날치", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_3_flying_fish.png", rare: false },
+        { id: "bm_4", name: "멸치 떼", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_4_anchovy.png", rare: false },
+        { id: "bm_5", name: "삼치", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_5_spanish_mackerel.png", rare: false },
+        { id: "bm_6", name: "고등어", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_6_mackerel.png", rare: false },
+        { id: "bm_7", name: "전갱이", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_7_horse_mackerel.png", rare: false },
+        { id: "bm_8", name: "청새치 치어", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_8_young_marlin.png", rare: false },
+        { id: "bm_9", name: "꽁치", score: 100, icon: "🐟", imgPath: "Assets/prey/blue_marlin/bm_9_saury.png", rare: false },
+        { id: "bm_10", name: "바다새", score: 300, icon: "🕊️", imgPath: "Assets/prey/blue_marlin/bm_10_seabird.png", rare: true }
     ],
     giant_squid: [
-        { id: "gs_1", name: "심해어", score: 100, icon: "🐟", imgPath: "assets/prey/giant_squid/gs_1_anglerfish.png", rare: false },
-        { id: "gs_2", name: "랜턴피시", score: 100, icon: "🏮", imgPath: "assets/prey/giant_squid/gs_2_lanternfish.png", rare: false },
-        { id: "gs_3", name: "심해 새우", score: 100, icon: "🦐", imgPath: "assets/prey/giant_squid/gs_3_shrimp.png", rare: false },
-        { id: "gs_4", name: "갯지렁이", score: 100, icon: "🪱", imgPath: "assets/prey/giant_squid/gs_4_worm.png", rare: false },
-        { id: "gs_5", name: "갑오징어", score: 100, icon: "🦑", imgPath: "assets/prey/giant_squid/gs_5_cuttlefish.png", rare: false },
-        { id: "gs_6", name: "명태", score: 100, icon: "🐟", imgPath: "assets/prey/giant_squid/gs_6_pollock.png", rare: false },
-        { id: "gs_7", name: "대구", score: 100, icon: "🐟", imgPath: "assets/prey/giant_squid/gs_7_cod.png", rare: false },
-        { id: "gs_8", name: "심해 게", score: 100, icon: "🦀", imgPath: "assets/prey/giant_squid/gs_8_crab.png", rare: false },
-        { id: "gs_9", name: "암모나이트", score: 300, icon: "🐚", imgPath: "assets/prey/giant_squid/gs_9_ammonite.png", rare: true },
-        { id: "gs_10", name: "크릴새우 떼", score: 300, icon: "🦐", imgPath: "assets/prey/giant_squid/gs_10_krill.png", rare: true }
+        { id: "gs_1", name: "심해어", score: 100, icon: "🐟", imgPath: "Assets/prey/giant_squid/gs_1_anglerfish.png", rare: false },
+        { id: "gs_2", name: "랜턴피시", score: 100, icon: "🏮", imgPath: "Assets/prey/giant_squid/gs_2_lanternfish.png", rare: false },
+        { id: "gs_3", name: "심해 새우", score: 100, icon: "🦐", imgPath: "Assets/prey/giant_squid/gs_3_shrimp.png", rare: false },
+        { id: "gs_4", name: "갯지렁이", score: 100, icon: "🪱", imgPath: "Assets/prey/giant_squid/gs_4_worm.png", rare: false },
+        { id: "gs_5", name: "갑오징어", score: 100, icon: "🦑", imgPath: "Assets/prey/giant_squid/gs_5_cuttlefish.png", rare: false },
+        { id: "gs_6", name: "명태", score: 100, icon: "🐟", imgPath: "Assets/prey/giant_squid/gs_6_pollock.png", rare: false },
+        { id: "gs_7", name: "대구", score: 100, icon: "🐟", imgPath: "Assets/prey/giant_squid/gs_7_cod.png", rare: false },
+        { id: "gs_8", name: "심해 게", score: 100, icon: "🦀", imgPath: "Assets/prey/giant_squid/gs_8_crab.png", rare: false },
+        { id: "gs_9", name: "암모나이트", score: 300, icon: "🐚", imgPath: "Assets/prey/giant_squid/gs_9_ammonite.png", rare: true },
+        { id: "gs_10", name: "크릴새우 떼", score: 300, icon: "🦐", imgPath: "Assets/prey/giant_squid/gs_10_krill.png", rare: true }
     ],
     megalodon: [
-        { id: "mg_1", name: "고대 고래", score: 100, icon: "🐋", imgPath: "assets/prey/megalodon/mg_1_ancient_whale.png", rare: false },
-        { id: "mg_2", name: "대형 바다거북", score: 100, icon: "🐢", imgPath: "assets/prey/megalodon/mg_2_giant_turtle.png", rare: false },
-        { id: "mg_3", name: "대형 매너티", score: 100, icon: "🦭", imgPath: "assets/prey/megalodon/mg_3_manatee.png", rare: false },
-        { id: "mg_4", name: "바다사자 떼", score: 100, icon: "🦭", imgPath: "assets/prey/megalodon/mg_4_sea_lion_pack.png", rare: false },
-        { id: "mg_5", name: "대형 참치", score: 100, icon: "🐟", imgPath: "assets/prey/megalodon/mg_5_bluefin.png", rare: false },
-        { id: "mg_6", name: "대형 가오리", score: 100, icon: "🐡", imgPath: "assets/prey/megalodon/mg_6_manta_ray.png", rare: false },
-        { id: "mg_7", name: "고대 상어", score: 300, icon: "🦈", imgPath: "assets/prey/megalodon/mg_7_ancient_shark.png", rare: true },
-        { id: "mg_8", name: "해양 파충류", score: 100, icon: "🐊", imgPath: "assets/prey/megalodon/mg_8_mosasaur.png", rare: false },
-        { id: "mg_9", name: "향고래", score: 300, icon: "🐳", imgPath: "assets/prey/megalodon/mg_9_sperm_whale.png", rare: true },
-        { id: "mg_10", name: "고대 다랑어", score: 100, icon: "🐟", imgPath: "assets/prey/megalodon/mg_10_giant_tuna.png", rare: false }
+        { id: "mg_1", name: "고대 고래", score: 100, icon: "🐋", imgPath: "Assets/prey/megalodon/mg_1_ancient_whale.png", rare: false },
+        { id: "mg_2", name: "대형 바다거북", score: 100, icon: "🐢", imgPath: "Assets/prey/megalodon/mg_2_giant_turtle.png", rare: false },
+        { id: "mg_3", name: "대형 매너티", score: 100, icon: "🦭", imgPath: "Assets/prey/megalodon/mg_3_manatee.png", rare: false },
+        { id: "mg_4", name: "바다사자 떼", score: 100, icon: "🦭", imgPath: "Assets/prey/megalodon/mg_4_sea_lion_pack.png", rare: false },
+        { id: "mg_5", name: "대형 참치", score: 100, icon: "🐟", imgPath: "Assets/prey/megalodon/mg_5_bluefin.png", rare: false },
+        { id: "mg_6", name: "대형 가오리", score: 100, icon: "🐡", imgPath: "Assets/prey/megalodon/mg_6_manta_ray.png", rare: false },
+        { id: "mg_7", name: "고대 상어", score: 300, icon: "🦈", imgPath: "Assets/prey/megalodon/mg_7_ancient_shark.png", rare: true },
+        { id: "mg_8", name: "해양 파충류", score: 100, icon: "🐊", imgPath: "Assets/prey/megalodon/mg_8_mosasaur.png", rare: false },
+        { id: "mg_9", name: "향고래", score: 300, icon: "🐳", imgPath: "Assets/prey/megalodon/mg_9_sperm_whale.png", rare: true },
+        { id: "mg_10", name: "고대 다랑어", score: 100, icon: "🐟", imgPath: "Assets/prey/megalodon/mg_10_giant_tuna.png", rare: false }
     ]
 };
 
@@ -74,7 +74,7 @@ const CHARACTERS = [
         key: "killer_whale",
         name: "범고래 (Killer Whale)",
         avatar: "🐋",
-        imgPath: "assets/characters/killer_whale.png",
+        imgPath: "Assets/characters/killer_whale.png",
         trait: "올라운더 / 밸런스형",
         skill: "초음파 탐지: 위험 요소 1.5초 전 경고 점멸",
         speed: 0.6, boost: 0.6, hitbox: 0.6, magnet: 0.6,
@@ -85,7 +85,7 @@ const CHARACTERS = [
         key: "shark",
         name: "상어 (Shark)",
         avatar: "🦈",
-        imgPath: "assets/characters/shark.png",
+        imgPath: "Assets/characters/shark.png",
         trait: "기습 / 속도 특화형",
         skill: "피의 포식: 연속 포식 시 이속 누적 +20% & 최대 콤보 x4.0",
         speed: 0.8, boost: 0.8, hitbox: 0.4, magnet: 0.4,
@@ -96,7 +96,7 @@ const CHARACTERS = [
         key: "blue_marlin",
         name: "청새치 (Blue Marlin)",
         avatar: "🐟",
-        imgPath: "assets/characters/blue_marlin.png",
+        imgPath: "Assets/characters/blue_marlin.png",
         trait: "초고속 직진 / 돌진형",
         skill: "바늘 돌진: 점프 시 전방 순간 돌진 & 소형 그물/적 1회 관통 파괴",
         speed: 1.0, boost: 1.0, hitbox: 0.35, magnet: 0.2,
@@ -107,7 +107,7 @@ const CHARACTERS = [
         key: "giant_squid",
         name: "대왕오징어 (Giant Squid)",
         avatar: "🦑",
-        imgPath: "assets/characters/giant_squid.png",
+        imgPath: "Assets/characters/giant_squid.png",
         trait: "심해 / 특수 궤적 유연형",
         skill: "먹물 은신: 초광범위 흡입. 피격 위기 시 먹물 분사 감속 & 무적 2회",
         speed: 0.4, boost: 0.4, hitbox: 0.6, magnet: 1.0,
@@ -118,7 +118,7 @@ const CHARACTERS = [
         key: "megalodon",
         name: "메갈로돈 (Megalodon)",
         avatar: "🦈",
-        imgPath: "assets/characters/megalodon.png",
+        imgPath: "Assets/characters/megalodon.png",
         trait: "고대 파워 / 돌파형",
         skill: "최상위 장갑: 보호막 충전 시 소형 바위/잠수함 파괴 통과",
         speed: 0.4, boost: 0.6, hitbox: 1.0, magnet: 0.8,
@@ -607,14 +607,14 @@ class KillerWhaleGame {
     loadCustomAssets() {
         // 1. 배경 및 모달 텍스처
         const assetMap = {
-            title: "assets/title/title_bg.png",
-            settings: "assets/settings/settings_modal_bg.png",
-            results: "assets/results/result_bg.png",
-            stage_1: "assets/stages/stage1_pacific.png",
-            stage_2: "assets/stages/stage2_antarctic.png",
-            stage_3: "assets/stages/stage3_tropical_reef.png",
-            stage_4: "assets/stages/stage4_atlantic_deep.png",
-            stage_5: "assets/stages/stage5_mariana_trench.png"
+            title: "Assets/title/title_bg.png",
+            settings: "Assets/settings/settings_modal_bg.png",
+            results: "Assets/results/result_bg.png",
+            stage_1: "Assets/stages/stage1_pacific.png",
+            stage_2: "Assets/stages/stage2_antarctic.png",
+            stage_3: "Assets/stages/stage3_tropical_reef.png",
+            stage_4: "Assets/stages/stage4_atlantic_deep.png",
+            stage_5: "Assets/stages/stage5_mariana_trench.png"
         };
 
         for (const [key, path] of Object.entries(assetMap)) {
@@ -678,7 +678,7 @@ class KillerWhaleGame {
         ];
         hazardFiles.forEach(hid => {
             const hImg = new Image();
-            hImg.src = `assets/hazards/${hid}.png`;
+            hImg.src = `Assets/hazards/${hid}.png`;
             hImg.onload = () => {
                 this.hazardImages[hid] = hImg;
             };
@@ -2021,7 +2021,7 @@ class KillerWhaleGame {
         const avatarEl = document.getElementById("char-avatar");
         if (avatarEl) {
             if (char.imgPath) {
-                avatarEl.innerHTML = `<img src="${char.imgPath}" alt="${char.name}" style="width: 240px; height: auto; max-height: 130px; object-fit: contain; filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 28px rgba(0, 229, 255, 0.75));">`;
+                avatarEl.innerHTML = `<img src="${char.imgPath}" alt="${char.name}" onerror="this.onerror=null; this.parentElement.innerText='${char.avatar}';" style="width: 240px; height: auto; max-height: 130px; object-fit: contain; filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 28px rgba(0, 229, 255, 0.75));">`;
             } else {
                 avatarEl.innerText = char.avatar;
             }
