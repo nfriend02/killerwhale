@@ -697,20 +697,8 @@ class KillerWhaleGame {
             if (!this.audio.ctx) {
                 this.audio.init();
             }
-            // 2. Transition directly to login screen for user authentication!
-            if (!window.authManager || !window.authManager.currentUser) {
-                this.showScreen("screen-login");
-                this.state = "login";
-            } else if (!window.authManager.currentUser.nickname) {
-                this.showScreen("screen-nickname");
-                this.state = "nickname";
-                const input = document.getElementById("input-nickname");
-                if (input) input.focus();
-            } else {
-                this.showScreen("screen-title");
-                this.state = "title";
-                window.authManager.updateHeaderUI();
-            }
+            // 2. Play 6-second cinematic intro video on initial launch!
+            this.playIntroExplicitly();
         };
 
         const screenFirst = document.getElementById("screen-first");
@@ -718,11 +706,9 @@ class KillerWhaleGame {
 
         if (screenFirst) {
             screenFirst.onclick = handleStartTransition;
-            screenFirst.onpointerdown = handleStartTransition;
         }
         if (firstStartBtn) {
             firstStartBtn.onclick = handleStartTransition;
-            firstStartBtn.onpointerdown = handleStartTransition;
         }
     }
 
@@ -730,33 +716,35 @@ class KillerWhaleGame {
         const video = document.getElementById("intro-video");
         const introScreen = document.getElementById("screen-intro");
         const soundBtn = document.getElementById("btn-intro-sound");
+        const skipBtn = document.getElementById("btn-intro-skip");
 
         if (video && introScreen) {
+            this.showScreen("screen-intro");
+            this.state = "intro";
+
             video.currentTime = 0;
-            // Default audio is Off (Muted)
+            // Default audio starts Muted for guaranteed browser auto-play compliance
             video.muted = true;
             let isAudioActive = false;
 
             if (soundBtn) {
-                soundBtn.innerText = "🔇 Sound Off (Default)";
+                soundBtn.innerText = "🔇 소리 켜기";
                 soundBtn.onclick = (e) => {
                     e.stopPropagation();
                     isAudioActive = !isAudioActive;
                     if (isAudioActive) {
-                        video.removeAttribute("muted");
                         video.muted = false;
                         video.volume = 1.0;
                         if (!this.audio.ctx) this.audio.init();
                         this.audio.playCinematicIntroAudio();
-                        soundBtn.innerText = "🔊 Sound On";
+                        soundBtn.innerText = "🔊 소리 끄기";
                     } else {
                         video.muted = true;
-                        soundBtn.innerText = "🔇 Sound Off";
+                        soundBtn.innerText = "🔇 소리 켜기";
                     }
                 };
             }
 
-            const skipBtn = document.getElementById("btn-intro-skip");
             if (skipBtn) {
                 skipBtn.onclick = (e) => {
                     e.stopPropagation();
@@ -764,18 +752,24 @@ class KillerWhaleGame {
                 };
             }
 
-            // Tapping on intro video screen also skips
-            introScreen.onclick = () => this.skipIntro();
-
-            video.onended = () => this.skipIntro();
-            video.onerror = () => {
-                console.log("[KillerWhaleGame] Video stream fallback. Transitioning to auth/title.");
+            video.onended = () => {
                 this.skipIntro();
             };
 
-            this.showScreen("screen-intro");
-            this.state = "intro";
-            video.play().catch(() => this.skipIntro());
+            video.onerror = (err) => {
+                console.warn("[IntroVideo] Video play error fallback:", err);
+                this.skipIntro();
+            };
+
+            video.load();
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(err => {
+                    console.warn("[IntroVideo] Autoplay policy prevented playback, retrying muted:", err);
+                    video.muted = true;
+                    video.play().catch(() => this.skipIntro());
+                });
+            }
         } else {
             this.skipIntro();
         }
