@@ -9,7 +9,7 @@
       "**/node_modules/**",
       "**/*.py",
       "**/*.md",
-      "Assets/**",
+      "Assets/_Scripts/**",
       "__pycache__/**"
     ],
     "headers": [

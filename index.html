@@ -54,8 +54,9 @@
         <!-- 0. 6-Second Intro Video Layer -->
         <div id="screen-intro" class="ui-layer hidden">
             <video id="intro-video" playsinline preload="auto" muted>
+                <source src="intro_6s.mp4" type="video/mp4">
+                <source src="Assets/video/intro_6s.mp4" type="video/mp4">
                 <source src="assets/video/intro_6s.mp4" type="video/mp4">
-                <source src="assets/video/intro.mp4" type="video/mp4">
             </video>
             <div class="intro-controls-overlay">
                 <button type="button" id="btn-intro-sound" class="arcade-btn secondary intro-aux-btn" title="소리 켜기/끄기">🔊 소리 켜기</button>
@@ -468,6 +469,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Firebase SDK (v10.14.1 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics-compat.js"></script>
 
     <!-- Scripts (i18n, Firebase Init, Auth Manager, Game Engine) -->
     <script src="i18n.js?v=20261021_i18n"></script>
