@@ -1016,6 +1016,13 @@ canvas#gameCanvas {
 }
 
 /* 4. 결과 모달 */
+.result-card {
+    background-image: url('Assets/results/result_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .result-title {
     font-size: 32px;
     font-weight: 900;
@@ -2229,6 +2236,9 @@ canvas#gameCanvas {
         width: 96% !important;
         max-width: 400px !important;
         padding: 20px 16px !important;
+        background: radial-gradient(circle at top, rgba(14, 43, 77, 0.95) 0%, rgba(5, 16, 32, 0.97) 100%) !important;
+        border: 2px solid rgba(0, 229, 255, 0.5) !important;
+        box-shadow: 0 0 35px rgba(0, 229, 255, 0.25) !important;
     }
 
     .settings-group {
@@ -2622,11 +2632,17 @@ canvas#gameCanvas {
         white-space: nowrap !important;
     }
 
-    /* 결과 모달 */
+    /* 결과 모달: 세로 모드 전용 배경 이미지 적용으로 반쪽 잘림 현상 완벽 방지 */
     .result-card {
         width: 96% !important;
         max-width: 400px !important;
-        padding: 18px 14px !important;
+        padding: 20px 14px !important;
+        background-image: url('Assets/results/result_bg_portrait.png') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        border: 2px solid rgba(0, 229, 255, 0.6) !important;
+        box-shadow: 0 0 35px rgba(0, 229, 255, 0.35) !important;
     }
 
     .result-title {

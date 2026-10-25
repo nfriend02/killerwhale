@@ -610,6 +610,7 @@ class KillerWhaleGame {
             title: "Assets/title/title_bg.png",
             settings: "Assets/settings/settings_modal_bg.png",
             results: "Assets/results/result_bg.png",
+            results_portrait: "Assets/results/result_bg_portrait.png",
             stage_1: "Assets/stages/stage1_pacific.png",
             stage_2: "Assets/stages/stage2_antarctic.png",
             stage_3: "Assets/stages/stage3_tropical_reef.png",
@@ -629,16 +630,15 @@ class KillerWhaleGame {
                 if (key === "settings") {
                     const card = document.getElementById("settings-card");
                     if (card) {
-                        card.style.backgroundImage = `url('${path}')`;
-                        card.style.backgroundSize = "cover";
+                        const isPortrait = window.innerHeight > window.innerWidth;
+                        if (!isPortrait) {
+                            card.style.backgroundImage = `url('${path}')`;
+                            card.style.backgroundSize = "cover";
+                        }
                     }
                 }
-                if (key === "results") {
-                    const card = document.getElementById("result-card");
-                    if (card) {
-                        card.style.backgroundImage = `url('${path}')`;
-                        card.style.backgroundSize = "cover";
-                    }
+                if (key === "results" || key === "results_portrait") {
+                    this.updateResultCardBackground();
                 }
             };
         }
@@ -683,6 +683,17 @@ class KillerWhaleGame {
                 this.hazardImages[hid] = hImg;
             };
         });
+    }
+
+    updateResultCardBackground() {
+        const card = document.getElementById("result-card");
+        if (!card) return;
+        const isPortrait = window.innerHeight > window.innerWidth || (window.matchMedia && window.matchMedia("(orientation: portrait)").matches);
+        const bgPath = isPortrait ? "Assets/results/result_bg_portrait.png" : "Assets/results/result_bg.png";
+        card.style.backgroundImage = `url('${bgPath}')`;
+        card.style.backgroundSize = "cover";
+        card.style.backgroundPosition = "center";
+        card.style.backgroundRepeat = "no-repeat";
     }
 
     setupFirstScreen() {
@@ -1612,6 +1623,14 @@ class KillerWhaleGame {
                 this.showResultModal(this.celebration ? this.celebration.isSuccess : true);
             });
         }
+
+        // 반응형 리사이즈 및 화면 회전 시 배경 갱신
+        window.addEventListener("resize", () => {
+            this.updateResultCardBackground();
+        });
+        window.addEventListener("orientationchange", () => {
+            setTimeout(() => this.updateResultCardBackground(), 100);
+        });
     }
 
     updateSettingsUI() {
@@ -2354,6 +2373,7 @@ class KillerWhaleGame {
             viewScoreBtn.style.display = "none";
         }
         this.showScreen("screen-result");
+        this.updateResultCardBackground();
         const title = document.getElementById("result-title");
         const story = document.getElementById("result-bridge-text");
         const nextBtn = document.getElementById("btn-result-next");
