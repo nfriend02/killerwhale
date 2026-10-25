@@ -607,7 +607,7 @@ class KillerWhaleGame {
     loadCustomAssets() {
         // 1. 배경 및 모달 텍스처
         const assetMap = {
-            title: "Assets/title/title_bg.png",
+            title: "Assets/title/title_bg.png?v=20261026_clean_title",
             settings: "Assets/settings/settings_modal_bg.png",
             results: "Assets/results/result_bg.png",
             results_portrait: "Assets/results/result_bg_portrait.png",

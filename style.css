@@ -94,6 +94,13 @@ body {
     pointer-events: none;
 }
 
+#title-bg-layer {
+    background-image: url('Assets/title/title_bg.png?v=20261026_clean_title');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 canvas#gameCanvas {
     position: absolute;
     top: 0;
