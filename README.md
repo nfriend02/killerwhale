@@ -88,3 +88,12 @@ The project is pre-configured with:
 - [`firestore.rules`](file:///c:/Users/HS%20Kim/Desktop/Agames/killerwhale/firestore.rules): Production-grade security rules with role ownership and custom claim admin privileges.
 - [`.firebaserc`](file:///c:/Users/HS%20Kim/Desktop/Agames/killerwhale/.firebaserc): Project alias template.
 - [`firebase-config.js`](file:///c:/Users/HS%20Kim/Desktop/Agames/killerwhale/firebase-config.js): Firebase SDK initialization with local mock fallback.
+
+---
+
+## 🌐 5. Production URL & Firebase Authorized Domains
+
+- **Official Live Production URL**: [https://killerwhale-hazel.vercel.app](https://killerwhale-hazel.vercel.app)
+- **GitHub Repository**: [https://github.com/nfriend02/killerwhale](https://github.com/nfriend02/killerwhale) (Auto-deploys to Vercel on `main` push)
+- **Firebase Authentication Authorized Domain**: `killerwhale-hazel.vercel.app` (Registered in Firebase Console -> Authentication -> Settings -> Authorized domains)
+
