@@ -7,7 +7,7 @@
     <!-- Favicon & Mobile App Icons -->
     <link rel="icon" type="image/png" href="Assets/icons/app_icon_mobile.png">
     <link rel="apple-touch-icon" href="Assets/icons/app_icon_mobile.png">
-    <link rel="stylesheet" href="style.css?v=20261026_mobile_ux_v3">
+    <link rel="stylesheet" href="style.css?v=20261026_hide_header_chip_v5">
 </head>
 <body>
     <div id="game-container">
@@ -24,7 +24,7 @@
         </div>
 
         <!-- Logged-in User Header Chip (Title / Result / MyPage) -->
-        <div id="header-auth-box" class="header-user-chip hidden">
+        <div id="header-auth-box" class="header-user-chip hidden" style="display: none !important;">
             <div class="user-info-group">
                 <span id="header-user-badge" class="user-badge" data-i18n="userGuestBadge">게스트</span>
                 <span id="header-user-nickname" class="user-nickname">플레이어</span>
@@ -479,7 +479,7 @@
     <!-- Scripts (i18n, Firebase Init, Auth Manager, Game Engine) -->
     <script src="i18n.js?v=20261026_i18n_v3"></script>
     <script src="firebase-config.js?v=20261021_fb"></script>
-    <script src="auth.js?v=20261026_auth_v3"></script>
-    <script src="game.js?v=20261026_game_v3"></script>
+    <script src="auth.js?v=20261026_auth_v4"></script>
+    <script src="game.js?v=20261026_game_v4"></script>
 </body>
 </html>

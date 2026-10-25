@@ -35,3 +35,5 @@ scratch/
 *.user
 *.userosscache
 *.sln.docstates
+
+.vercel

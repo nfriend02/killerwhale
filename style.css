@@ -117,7 +117,7 @@ canvas#gameCanvas {
     flex-direction: column;
 }
 
-.hidden, .ui-layer.hidden {
+.hidden, .ui-layer.hidden, .header-user-chip.hidden, #header-auth-box.hidden {
     display: none !important;
 }
 
@@ -1272,6 +1272,11 @@ canvas#gameCanvas {
     pointer-events: auto !important;
 }
 
+.header-user-chip.hidden,
+#header-auth-box.hidden {
+    display: none !important;
+}
+
 .user-info-group {
     display: flex;
     align-items: center;
@@ -2126,6 +2131,11 @@ canvas#gameCanvas {
         padding: 2px 10px !important;
     }
 
+    .header-user-chip.hidden,
+    #header-auth-box.hidden {
+        display: none !important;
+    }
+
     .lang-switcher-bar {
         top: 8px !important;
         right: 10px !important;
@@ -2776,12 +2786,16 @@ canvas#gameCanvas {
         top: 8px !important;
         left: 10px !important;
         padding: 4px 8px !important;
-        display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
         gap: 3px !important;
         border-radius: 12px !important;
         max-width: calc(100vw - 120px) !important;
+    }
+
+    .header-user-chip.hidden,
+    #header-auth-box.hidden {
+        display: none !important;
     }
 
     .user-info-group {
@@ -2847,5 +2861,21 @@ canvas#gameCanvas {
         line-height: 1.4 !important;
         max-width: 88vw !important;
     }
+
+    /* 전역 숨김 강제 적용 */
+    .hidden,
+    .ui-layer.hidden,
+    .header-user-chip.hidden,
+    #header-auth-box.hidden {
+        display: none !important;
+    }
+}
+
+/* 최하단 전역 우선 숨김 규칙 */
+.hidden,
+.ui-layer.hidden,
+.header-user-chip.hidden,
+#header-auth-box.hidden {
+    display: none !important;
 }
 

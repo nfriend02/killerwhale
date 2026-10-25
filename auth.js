@@ -547,8 +547,13 @@ class AuthManager {
         const badgeDisplay = document.getElementById("header-user-badge");
 
         if (headerAuthBox) {
-            if (this.currentUser && this.currentUser.nickname) {
+            const activeScreen = window.gameInstance ? window.gameInstance.state : null;
+            const disallowedScreens = ["first", "intro", "login", "nickname", "play", "still", "screen-first", "screen-intro", "screen-login", "screen-nickname", "hud-overlay"];
+            const isDisallowed = !activeScreen || disallowedScreens.includes(activeScreen);
+
+            if (this.currentUser && this.currentUser.nickname && !isDisallowed) {
                 headerAuthBox.classList.remove("hidden");
+                headerAuthBox.style.removeProperty("display");
                 headerAuthBox.style.display = "flex";
                 if (nicknameDisplay) nicknameDisplay.innerText = this.currentUser.nickname;
                 if (badgeDisplay) {
@@ -558,7 +563,7 @@ class AuthManager {
                 }
             } else {
                 headerAuthBox.classList.add("hidden");
-                headerAuthBox.style.display = "none";
+                headerAuthBox.style.setProperty("display", "none", "important");
             }
         }
     }

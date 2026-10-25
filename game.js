@@ -1997,19 +1997,20 @@ class KillerWhaleGame {
         const target = document.getElementById(screenId);
         if (target) target.classList.remove("hidden");
 
-        // Manage header auth box visibility (Only on title, result, mypage)
+        // Manage header auth box visibility (Only on title, result, character)
         const headerAuthBox = document.getElementById("header-auth-box");
         if (headerAuthBox) {
             if (screenId === "screen-title" || screenId === "screen-result" || screenId === "screen-character") {
                 if (window.authManager && window.authManager.currentUser && window.authManager.currentUser.nickname) {
+                    headerAuthBox.style.removeProperty("display");
                     window.authManager.updateHeaderUI();
                 } else {
                     headerAuthBox.classList.add("hidden");
-                    headerAuthBox.style.display = "none";
+                    headerAuthBox.style.setProperty("display", "none", "important");
                 }
-            } else if (screenId === "screen-first" || screenId === "screen-intro" || screenId === "screen-login" || screenId === "screen-nickname" || screenId === "hud-overlay") {
+            } else {
                 headerAuthBox.classList.add("hidden");
-                headerAuthBox.style.display = "none";
+                headerAuthBox.style.setProperty("display", "none", "important");
             }
         }
 
