@@ -829,8 +829,13 @@ class KillerWhaleGame {
                 if (this.state === "character_select") {
                     this.updateCharacterSelectUI();
                 }
-                if (this.state === "mypage") {
+                if (this.state === "mypage" && this.updateMyPageUI) {
                     this.updateMyPageUI();
+                }
+                const stageNameEl = document.getElementById("hud-stage-name");
+                if (stageNameEl && this.stageData) {
+                    const stIndex = this.currentStageIndex || 1;
+                    stageNameEl.innerText = window.i18n ? window.i18n.t(`stage_${stIndex}_name`, this.stageData.name) : this.stageData.name;
                 }
             });
         });
@@ -2028,9 +2033,13 @@ class KillerWhaleGame {
                 avatarEl.innerText = char.avatar;
             }
         }
-        document.getElementById("char-name").innerText = char.name;
-        document.getElementById("char-trait").innerText = char.trait;
-        document.getElementById("char-skill-desc").innerText = char.skill;
+        const localizedName = window.i18n ? window.i18n.t(`char_${char.key}_name`, char.name) : char.name;
+        const localizedTrait = window.i18n ? window.i18n.t(`char_${char.key}_trait`, char.trait) : char.trait;
+        const localizedSkill = window.i18n ? window.i18n.t(`char_${char.key}_skill`, char.skill) : char.skill;
+
+        document.getElementById("char-name").innerText = localizedName;
+        document.getElementById("char-trait").innerText = localizedTrait;
+        document.getElementById("char-skill-desc").innerText = localizedSkill;
 
         document.getElementById("stat-speed").style.width = `${char.speed * 100}%`;
         document.getElementById("stat-boost").style.width = `${char.boost * 100}%`;
@@ -2110,13 +2119,14 @@ class KillerWhaleGame {
 
         // HUD 갱신
         this.showScreen("hud-overlay");
-        document.getElementById("hud-stage-name").innerText = this.stageData.name;
+        const stName = window.i18n ? window.i18n.t(`stage_${this.currentStageIndex}_name`, this.stageData.name) : this.stageData.name;
+        document.getElementById("hud-stage-name").innerText = stName;
         this.updateLivesHUD();
         this.updateScoreHUD();
         this.updateComboHUD();
         this.updateKingHUD();
 
-        document.getElementById("hud-skill-name").innerText = char.name.split(" ")[0];
+        document.getElementById("hud-skill-name").innerText = window.i18n ? window.i18n.t("skillLabel", "스킬") : "스킬";
     }
 
     updateLivesHUD() {
@@ -2347,9 +2357,14 @@ class KillerWhaleGame {
         const story = document.getElementById("result-bridge-text");
         const nextBtn = document.getElementById("btn-result-next");
 
-        title.innerText = isClear ? "STAGE CLEAR" : "GAME OVER";
+        const stIndex = this.currentStageIndex || 1;
+        title.innerText = isClear 
+            ? (window.i18n ? window.i18n.t("resultTitleClear", "STAGE CLEAR") : "STAGE CLEAR")
+            : (window.i18n ? window.i18n.t("resultTitleFail", "GAME OVER") : "GAME OVER");
         title.style.color = isClear ? "#ffe66d" : "#ff3366";
-        story.innerText = isClear ? this.stageData.bridge : "심해의 위협에 가라앉았습니다. 다시 도전하세요!";
+        story.innerText = isClear 
+            ? (window.i18n ? window.i18n.t(`stage_${stIndex}_bridge`, this.stageData.bridge) : this.stageData.bridge)
+            : (window.i18n ? window.i18n.t("stageFailSubtitle", "심해의 위협에 가라앉았습니다. 다시 도전하세요!") : "심해의 위협에 가라앉았습니다. 다시 도전하세요!");
         nextBtn.style.display = (isClear && this.currentStageIndex < 5) ? "inline-block" : "none";
 
         document.getElementById("result-score").innerText = this.score.toLocaleString();

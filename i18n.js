@@ -18,6 +18,9 @@ const I18N_DATA = {
         confirm: "확인",
         cancel: "취소",
         save: "저장",
+        introSoundBtn: "🔊 소리 켜기",
+        introSoundMute: "🔇 소리 끄기",
+        introSkipBtn: "SKIP ⏭",
 
         // Auth & Login
         loginTitle: "로그인",
@@ -167,6 +170,18 @@ const I18N_DATA = {
         btnNextStage: "다음 스테이지 ▶",
         btnResultHome: "메인 화면",
 
+        // Stages & Bridges
+        stage_1_name: "Stage 1: 태평양의 패자",
+        stage_2_name: "Stage 2: 남극의 유빙 해협",
+        stage_3_name: "Stage 3: 열대 산호초의 미궁",
+        stage_4_name: "Stage 4: 대서양 심해의 암전",
+        stage_5_name: "Stage 5: 마리아나 해구의 심연",
+        stage_1_bridge: "태평양의 패권을 노리던 거대 백상아리의 맹렬한 습격을 극적인 3D 공중제비로 회피하고, 차가운 극지의 빙하 해역으로 진입합니다!",
+        stage_2_bridge: "빙하 협곡을 음속으로 꿰뚫는 청새치의 치명적인 바늘 돌진을 연속 회피하여 생환했습니다. 이제 화려한 네온 산호초 미로로 향합니다!",
+        stage_3_bridge: "빛나는 네온 산호초 심연에서 뻗쳐나온 대왕오징어의 초거대 촉수 포획을 뚫고, 빛이 전혀 닿지 않는 대서양 칠흑의 심해로 침투합니다!",
+        stage_4_bridge: "칠흑 같은 심해의 암흑 속에서 덮쳐오는 고대 최상위 포식자 메갈로돈의 강철 턱을 완벽히 피해냈습니다! 마침내 지각이 갈라지는 최종 결전지, 마리아나 해구로 강하합니다!",
+        stage_5_bridge: "마리아나 해구의 심연 속에서 모든 포식자들의 지배자를 상대로 완벽한 전설적 회피를 달성했습니다! 당신은 이제 전 바다의 유일무이한 절대 군주입니다!",
+
         // Language toggle
         langSelect: "언어 선택"
     },
@@ -184,6 +199,9 @@ const I18N_DATA = {
         confirm: "Confirm",
         cancel: "Cancel",
         save: "Save",
+        introSoundBtn: "🔊 Sound ON",
+        introSoundMute: "🔇 Sound OFF",
+        introSkipBtn: "SKIP ⏭",
 
         // Auth & Login
         loginTitle: "Login",
@@ -333,6 +351,18 @@ const I18N_DATA = {
         btnNextStage: "Next Stage ▶",
         btnResultHome: "Main Menu",
 
+        // Stages & Bridges
+        stage_1_name: "Stage 1: Pacific Predator",
+        stage_2_name: "Stage 2: Antarctic Drift",
+        stage_3_name: "Stage 3: Coral Labyrinth",
+        stage_4_name: "Stage 4: Abyssal Atlantic",
+        stage_5_name: "Stage 5: Mariana Trench",
+        stage_1_bridge: "Evaded the fierce charge of the Great White Shark with a dramatic 3D somersault! Now venturing into the frozen Antarctic waters!",
+        stage_2_bridge: "Successfully dodged the supersonic needle thrusts of the Blue Marlin! Entering the dazzling neon coral reef labyrinth!",
+        stage_3_bridge: "Broke through the colossal grasping tentacles of the Giant Squid! Diving deep into the pitch-black abyssal trenches of the Atlantic!",
+        stage_4_bridge: "Dodged the prehistoric crushing jaws of Megalodon in absolute darkness! Descending into the ultimate proving grounds: the Mariana Trench!",
+        stage_5_bridge: "Achieved legendary evasion mastery against the supreme monarch of all ocean apex predators! You are now the undisputed sovereign of the sea!",
+
         // Language toggle
         langSelect: "Language"
     },
@@ -350,6 +380,9 @@ const I18N_DATA = {
         confirm: "確認",
         cancel: "キャンセル",
         save: "保存",
+        introSoundBtn: "🔊 サウンドON",
+        introSoundMute: "🔇 サウンドOFF",
+        introSkipBtn: "SKIP ⏭",
 
         // Auth & Login
         loginTitle: "ログイン",
@@ -498,6 +531,18 @@ const I18N_DATA = {
         btnRetry: "再挑戦 (Retry)",
         btnNextStage: "次のステージ ▶",
         btnResultHome: "メイン画面へ",
+
+        // Stages & Bridges
+        stage_1_name: "Stage 1: 太平洋の覇者",
+        stage_2_name: "Stage 2: 南極の流氷海峡",
+        stage_3_name: "Stage 3: 熱帯サンゴ礁の迷宮",
+        stage_4_name: "Stage 4: 大西洋深海の暗黒",
+        stage_5_name: "Stage 5: マリアナ海溝の深淵",
+        stage_1_bridge: "太平洋の覇権を狙うホオジロザメの猛襲を劇的な3D宙返りで回避！極寒の氷河海域へ進出します！",
+        stage_2_bridge: "超音速で突き刺さるクロカジキの突進を華麗に連続回避！ネオン輝くサンゴ礁迷路へ向かいます！",
+        stage_3_bridge: "深淵から伸びるダイオウイカの巨大触手を突破！光の届かない漆黒の大西洋深海へ突入します！",
+        stage_4_bridge: "暗黒から襲いかかるメガロドンの鋼鉄の顎を完璧に回避！最終決戦地マリアナ海溝へ降下します！",
+        stage_5_bridge: "深海の頂点捕食者を相手に伝説的な完全回避を達成！あなたは今、全大海原の絶対君主です！",
 
         // Language toggle
         langSelect: "言語選択"

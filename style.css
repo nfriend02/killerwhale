@@ -734,6 +734,9 @@ canvas#gameCanvas {
     border: none;
     transition: transform 0.1s, box-shadow 0.1s;
     letter-spacing: 1px;
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .arcade-btn.primary {
@@ -2134,7 +2137,7 @@ canvas#gameCanvas {
    MOBILE PORTRAIT (모바일 세로 모드 UX 최적화: orientation: portrait 또는 aspect-ratio <= 1)
    ========================================================================== */
 @media (orientation: portrait), (max-aspect-ratio: 1/1) {
-    /* 1. 최상위 컨테이너: 56.25vw 높이 제한 해제 및 풀 스크린 활성화 */
+    /* 1. 최상위 컨테이너: 풀 스크린 활성화 및 터치 최적화 */
     #game-container {
         max-width: 100vw !important;
         max-height: 100vh !important;
@@ -2152,18 +2155,18 @@ canvas#gameCanvas {
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
         width: 100vw !important;
-        height: 56.25vw !important; /* 16:9 고정 비율 유지 */
+        height: 56.25vw !important;
         max-height: 100vh !important;
     }
 
-    /* 3. 모달 백드롭 및 모달 카드 */
+    /* 3. 모달 백드롭 및 모달 카드 공통 */
     .modal-backdrop {
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        padding: 20px 14px !important;
+        padding: 16px 10px !important;
         display: flex !important;
         justify-content: safe center !important;
         align-items: center !important;
@@ -2173,11 +2176,11 @@ canvas#gameCanvas {
     }
 
     .modal-card {
-        width: 95% !important;
+        width: 96% !important;
         max-width: 420px !important;
         max-height: 88vh !important;
         max-height: 88dvh !important;
-        padding: 24px 18px !important;
+        padding: 20px 14px !important;
         margin: auto !important;
         box-sizing: border-box !important;
         overflow-y: auto !important;
@@ -2186,148 +2189,486 @@ canvas#gameCanvas {
     }
 
     .modal-title {
-        font-size: 22px !important;
-        margin-bottom: 16px !important;
+        font-size: 20px !important;
+        margin-bottom: 14px !important;
         text-align: center !important;
+        word-break: keep-all !important;
     }
 
-    /* 모달 버튼: 모바일 세로에서는 엄지 터치가 편하도록 100% 너비 수직 정렬 */
+    /* 4. 모달 액션 버튼 공통 */
     .modal-buttons {
         width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 10px !important;
-        margin-top: 18px !important;
+        gap: 8px !important;
+        margin-top: 14px !important;
     }
 
     .modal-buttons .arcade-btn {
         width: 100% !important;
         text-align: center !important;
-        padding: 13px 16px !important;
-        font-size: 15px !important;
+        padding: 12px 14px !important;
+        font-size: 14px !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+        line-height: 1.25 !important;
     }
 
-    /* 4. 세팅 모달: 세로 모드에서 시원하고 깔끔한 터치 슬라이더/버튼 */
+    /* 5. 세팅 모달: 목숨 선택 2열(2x2 그리드) 배치 & 버튼 2열 배치 */
     .settings-card {
-        width: 95% !important;
+        width: 96% !important;
         max-width: 400px !important;
-        padding: 22px 18px !important;
+        padding: 20px 16px !important;
     }
 
     .settings-group {
-        margin-bottom: 14px !important;
+        margin-bottom: 12px !important;
+        width: 100% !important;
     }
 
+    .group-title {
+        font-size: 13px !important;
+        margin-bottom: 6px !important;
+        word-break: keep-all !important;
+    }
+
+    /* 기본 목숨 선택 4개 메뉴: 횡열 찌그러짐 방지 -> 2열 2x2 그리드 배치 */
     .radio-pill-group {
-        gap: 6px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
     }
 
     .pill-btn {
-        padding: 10px 0 !important;
+        padding: 9px 8px !important;
         font-size: 14px !important;
+        white-space: nowrap !important;
+        text-align: center !important;
     }
 
     .slider-row {
-        font-size: 14px !important;
-        margin-top: 8px !important;
+        font-size: 13px !important;
+        margin-top: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
     }
 
     .slider-row input[type="range"] {
         width: 160px !important;
-        height: 24px !important; /* 모바일 터치 조작 용이 */
+        height: 24px !important;
     }
 
-    /* 5. 캐릭터 선택 모달 */
+    /* 세팅 모달 하단 버튼: 2열 나란히 배치 */
+    .settings-card .modal-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 16px !important;
+    }
+
+    .settings-card .modal-buttons .arcade-btn {
+        padding: 12px 8px !important;
+        font-size: 13.5px !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        line-height: 1.25 !important;
+    }
+
+    /* 6. 캐릭터 선택 모달: 캐러셀 & 스탯 그리드 넘침 방지 */
     .select-card {
-        width: 95% !important;
+        width: 96% !important;
         max-width: 420px !important;
-        padding: 20px 14px !important;
+        padding: 18px 12px !important;
+    }
+
+    .character-carousel {
+        gap: 6px !important;
+        width: 100% !important;
+        position: relative !important;
+    }
+
+    .nav-arrow {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 16px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .char-display-box {
+        flex: 1 !important;
+        min-width: 0 !important;
     }
 
     .char-avatar {
-        min-height: 100px !important;
-        font-size: 50px !important;
+        min-height: 80px !important;
+        font-size: 44px !important;
     }
 
     .char-avatar img {
-        max-height: 90px !important;
+        max-height: 80px !important;
     }
 
+    .char-name {
+        font-size: 19px !important;
+        word-break: keep-all !important;
+        text-align: center !important;
+        margin-top: 4px !important;
+    }
+
+    .char-trait {
+        font-size: 12px !important;
+        word-break: keep-all !important;
+        text-align: center !important;
+    }
+
+    .char-skill {
+        font-size: 11.5px !important;
+        word-break: keep-all !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        line-height: 1.35 !important;
+        margin: 4px 0 8px !important;
+        padding: 0 4px !important;
+    }
+
+    /* 스탯 그리드: 2열 정렬 및 막대 그래프 반응형 너비로 글자 내려쓰기 어긋남 방지 */
     .stats-grid {
-        gap: 6px 12px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px 10px !important;
+        width: 100% !important;
+    }
+
+    .stat-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+    }
+
+    .stat-row .bar {
+        flex: 1 !important;
+        max-width: 65px !important;
+        min-width: 40px !important;
+        height: 7px !important;
+        margin-left: 6px !important;
     }
 
     .prey-grid {
-        gap: 6px !important;
+        gap: 5px !important;
     }
 
     .prey-chip {
-        padding: 3px 8px !important;
-        font-size: 11px !important;
+        padding: 3px 6px !important;
+        font-size: 10.5px !important;
     }
 
-    /* 6. 메인 타이틀 화면 */
+    .select-card .modal-buttons {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+        margin-top: 14px !important;
+    }
+
+    #btn-char-select-play {
+        width: 100% !important;
+        padding: 13px 14px !important;
+        font-size: 15px !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+        line-height: 1.25 !important;
+    }
+
+    #btn-char-back {
+        width: 100% !important;
+        padding: 10px 14px !important;
+        font-size: 13.5px !important;
+    }
+
+    /* 7. 메인 타이틀 화면: 메뉴 버튼 2열 배치 & 여백 최적화 */
     .title-content {
-        gap: 18px !important;
-        width: 90% !important;
+        gap: 14px !important;
+        width: 92% !important;
         max-width: 360px !important;
         margin: auto !important;
     }
 
     .game-logo {
-        font-size: 42px !important;
+        font-size: 38px !important;
         letter-spacing: 2px !important;
         line-height: 1.15 !important;
     }
 
     .game-sublogo {
-        font-size: 14px !important;
+        font-size: 13px !important;
+        word-break: keep-all !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
     }
 
+    /* 타이틀 화면 메뉴 2열 그리드 배치 */
     .title-action-box {
         width: 100% !important;
+        max-width: 360px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
+        margin: 0 auto !important;
     }
 
-    .title-action-box .arcade-btn {
-        width: 100% !important;
+    #btn-title-start {
+        grid-column: 1 / -1 !important;
         padding: 14px 20px !important;
-        font-size: 15px !important;
+        font-size: 17px !important;
+        letter-spacing: 1.5px !important;
+        width: 100% !important;
+    }
+
+    #btn-title-character,
+    #btn-title-settings {
+        padding: 12px 8px !important;
+        font-size: 13px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        line-height: 1.25 !important;
+        min-height: 48px !important;
+        width: 100% !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+    }
+
+    #btn-title-intro-replay {
+        grid-column: 1 / -1 !important;
+        padding: 9px 16px !important;
+        font-size: 12.5px !important;
+        width: 100% !important;
+        margin-top: 2px !important;
     }
 
     .title-footer-tips {
         font-size: 11px !important;
-        line-height: 1.4 !important;
+        line-height: 1.45 !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        max-width: 92% !important;
+        margin: 4px auto 0 !important;
     }
 
-    /* 7. 인게임 HUD */
+    /* 8. 인게임 HUD: 2열 배치로 겹침 및 찌그러짐 완전 해결 */
     .hud-top-bar {
-        padding: 10px 14px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 6px 12px !important;
+        row-gap: 5px !important;
     }
 
+    /* HUD Row 1 - Left: 일시정지, 목숨, 미션 버튼 */
     .hud-left {
-        gap: 8px !important;
+        order: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
     }
 
     .arcade-btn-icon {
-        width: 38px !important;
-        height: 38px !important;
+        width: 36px !important;
+        height: 36px !important;
         font-size: 18px !important;
+    }
+
+    .hud-mission-mini-btn {
+        padding: 3px 7px !important;
+        font-size: 10px !important;
+        margin-left: 2px !important;
+    }
+
+    .lives-container {
+        gap: 4px !important;
+    }
+
+    .life-fin-icon {
+        font-size: 18px !important;
+    }
+
+    /* HUD Row 1 - Right: 스코어 및 콤보 뱃지 */
+    .hud-right {
+        order: 2 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-left: auto !important;
+    }
+
+    .score-display .label {
+        font-size: 9px !important;
+    }
+
+    .score-display .value {
+        font-size: 18px !important;
+    }
+
+    .combo-badge {
+        padding: 2px 6px !important;
+    }
+
+    .combo-badge span {
+        font-size: 11px !important;
+    }
+
+    /* HUD Row 2: 스테이지 명칭 및 프로그레스 바 중앙 정렬 */
+    .hud-center {
+        order: 3 !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding-top: 2px !important;
+    }
+
+    .stage-info {
+        font-size: 12px !important;
+        white-space: nowrap !important;
     }
 
     .progress-bar-wrapper {
-        width: 130px !important;
+        flex: 1 !important;
+        max-width: 180px !important;
+        min-width: 100px !important;
+        height: 10px !important;
     }
 
-    .hud-right .score-label {
-        font-size: 10px !important;
+    /* King of Enemies 회피 미션 배너 (모바일 세로 최적화) */
+    .king-mission-banner {
+        top: 72px !important;
+        width: 92% !important;
+        max-width: 360px !important;
+        padding: 6px 28px 8px 14px !important;
     }
 
-    .hud-right .score-value {
-        font-size: 18px !important;
+    .king-title-box {
+        font-size: 13px !important;
     }
 
-    /* 8. 가상 컨트롤러: 세로 모드에서 하단에 여유롭게 배치 */
+    .king-dodge-counter {
+        font-size: 12px !important;
+        gap: 6px !important;
+    }
+
+    .dodge-score {
+        font-size: 15px !important;
+    }
+
+    .king-tip-text {
+        font-size: 10.5px !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        overflow-wrap: break-word !important;
+        line-height: 1.35 !important;
+    }
+
+    /* 9. 축하 오버레이 & 결과 화면 */
+    .celebration-banner-box {
+        max-width: 92vw !important;
+        padding: 0 10px !important;
+    }
+
+    .celebration-badge {
+        font-size: 12px !important;
+        padding: 3px 10px !important;
+    }
+
+    .celebration-text {
+        font-size: 28px !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+    }
+
+    .celebration-subtext {
+        font-size: 12.5px !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        overflow-wrap: break-word !important;
+        max-width: 88vw !important;
+        margin-top: 6px !important;
+    }
+
+    .view-score-arcade-btn {
+        bottom: 24px !important;
+        padding: 10px 22px !important;
+        font-size: 14px !important;
+        white-space: nowrap !important;
+    }
+
+    /* 결과 모달 */
+    .result-card {
+        width: 96% !important;
+        max-width: 400px !important;
+        padding: 18px 14px !important;
+    }
+
+    .result-title {
+        font-size: 24px !important;
+    }
+
+    .result-story {
+        font-size: 12px !important;
+        line-height: 1.45 !important;
+        word-break: keep-all !important;
+        overflow-wrap: break-word !important;
+        text-align: center !important;
+        max-width: 95% !important;
+        margin: 4px auto 10px !important;
+    }
+
+    .result-stats-box {
+        gap: 24px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .stat-number {
+        font-size: 22px !important;
+    }
+
+    /* 결과 모달 버튼: 2열 배치 (상단 2개 2열, 하단 메인 화면 전체 너비) */
+    .result-card .modal-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 14px !important;
+    }
+
+    #btn-result-retry,
+    #btn-result-next {
+        padding: 12px 8px !important;
+        font-size: 13.5px !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        line-height: 1.25 !important;
+        width: 100% !important;
+    }
+
+    #btn-result-home {
+        grid-column: 1 / -1 !important;
+        padding: 11px 16px !important;
+        font-size: 13.5px !important;
+        width: 100% !important;
+    }
+
+    /* 10. 가상 컨트롤러 */
     #virtual-controls {
         position: absolute !important;
         top: 0 !important;
@@ -2355,57 +2696,156 @@ canvas#gameCanvas {
         bottom: 120px !important;
     }
 
-    /* 9. 로그인 모달 */
+    /* 11. 로그인 모달 */
     .login-card {
-        width: 95% !important;
+        width: 96% !important;
         max-width: 390px !important;
-        padding: 22px 18px !important;
+        padding: 20px 16px !important;
     }
 
     .auth-tabs {
+        display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 6px !important;
     }
 
-    /* 10. 마이페이지 */
-    .mypage-card {
-        width: 95% !important;
-        max-width: 400px !important;
-        padding: 20px 16px !important;
+    .auth-tab-btn {
+        padding: 8px 4px !important;
+        font-size: 12px !important;
+        white-space: nowrap !important;
+        justify-content: center !important;
     }
 
-    /* 11. 결과 화면 */
-    .result-card {
-        width: 95% !important;
-        max-width: 400px !important;
+    .text-link-btn {
+        white-space: normal !important;
+        word-break: keep-all !important;
+        line-height: 1.35 !important;
+    }
+
+    /* 닉네임 설정 모달 */
+    .nickname-card {
+        width: 96% !important;
+        max-width: 380px !important;
         padding: 22px 16px !important;
     }
 
-    .result-stats-box {
-        gap: 24px !important;
+    #btn-submit-nickname {
+        font-size: 14px !important;
+        padding: 12px 14px !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+        line-height: 1.3 !important;
+        text-align: center !important;
     }
 
-    /* 12. 상단 언어 선택 & 로그인 칩 */
+    .nickname-card .modal-subtitle,
+    .nickname-card .input-tip-sub {
+        word-break: keep-all !important;
+        line-height: 1.4 !important;
+    }
+
+    /* 12. 마이페이지 (행 내부 2단/2열 정렬로 글자 및 버튼 찌그러짐 방지) */
+    .mypage-card {
+        width: 96% !important;
+        max-width: 400px !important;
+        padding: 18px 14px !important;
+    }
+
+    .mypage-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        padding: 8px 12px !important;
+    }
+
+    .mypage-val-box {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .delete-notice-text {
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        word-break: keep-all !important;
+    }
+
+    /* 13. 상단 언어 선택 & 로그인 칩: 2열 구조로 좌우 겹침 완전 해소 */
     .header-user-chip {
-        top: 10px !important;
-        left: 12px !important;
-        padding: 3px 10px !important;
+        top: 8px !important;
+        left: 10px !important;
+        padding: 4px 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 3px !important;
+        border-radius: 12px !important;
+        max-width: calc(100vw - 120px) !important;
+    }
+
+    .user-info-group {
+        gap: 6px !important;
     }
 
     .user-nickname {
-        max-width: 90px !important;
-        font-size: 12px !important;
+        max-width: 80px !important;
+        font-size: 11.5px !important;
+    }
+
+    .user-action-group {
+        border-left: none !important;
+        padding-left: 0 !important;
+        gap: 4px !important;
+    }
+
+    .mini-auth-btn {
+        padding: 2px 6px !important;
+        font-size: 10.5px !important;
     }
 
     .lang-switcher-bar {
-        top: 10px !important;
-        right: 12px !important;
-        padding: 3px 8px !important;
+        top: 8px !important;
+        right: 10px !important;
+        padding: 3px 7px !important;
     }
 
     .lang-btn {
-        padding: 2px 6px !important;
-        font-size: 12px !important;
+        padding: 2px 5px !important;
+        font-size: 11px !important;
+    }
+
+    /* 14. 첫 화면 (게이트웨이) */
+    .first-content-card {
+        padding: 24px 16px !important;
+        max-width: 90vw !important;
+        gap: 12px !important;
+    }
+
+    .first-logo-emblem {
+        font-size: 52px !important;
+    }
+
+    .first-subtitle {
+        font-size: 13.5px !important;
+        word-break: keep-all !important;
+        line-height: 1.4 !important;
+    }
+
+    .first-start-btn {
+        padding: 13px 22px !important;
+        font-size: 16px !important;
+        white-space: normal !important;
+        word-break: keep-all !important;
+        line-height: 1.3 !important;
+        max-width: 88vw !important;
+    }
+
+    .first-hint-text {
+        font-size: 11.5px !important;
+        word-break: keep-all !important;
+        line-height: 1.4 !important;
+        max-width: 88vw !important;
     }
 }
 
